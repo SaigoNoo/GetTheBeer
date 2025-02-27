@@ -126,10 +126,24 @@ if not valid.env_exist():
 
 if valid.env_exist() and valid.have_master_password():
     db = Database()
-    db.connect()
+    if db.connect():
+        # API DB Calls
+
+        @app.get(
+            path="/api/login",
+            tags=["Core"]
+        )
+        async def login(username: str, password: str):
+            return db.login_valid(username=username, password=password)
+    else:
+        print(
+            f" > Votre ENV est soit invalide, soit incomplet, veuillez le redéfinir via /admin/env/set. \n"
+            f"   Votre MASTER BACKEND PASSWORD est: {Env().get_value('BACKEND_MASTER_PASSWORD')}"
+        )
 
 
-# API Calls
+# DEFAULT CALLS
+
 @app.get(
     path="/admin/env/set",
     tags=["Admin | Env"]
@@ -195,8 +209,9 @@ Il faut utiliser POST avec JSON pour la sécurité.
 
 
 @app.get(
-    path="/api/login",
-    tags=["Core"]
+    path="/admin/env/check_master_password",
+    tags=["Admin | Env"]
 )
-async def login(username: str, password: str):
-    return db.login_valid(username=username, password=password)
+async def check_master_password(master_password: str):
+    return master_password == Env().get_value(key="BACKEND_MASTER_PASSWORD")
+
