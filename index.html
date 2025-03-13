@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+</head>
+<body>
+<h1>Page de connexion</h1>
+<form>
+    <label for="username">Username: </label><input id="username" type="text" placeholder="username">
+    <label for="password">Password: </label><input id="password" type="password" placeholder="password">
+    <br>
+    <input id="remember" type="checkbox"><label for="remember">Retenir ma connexion</label>
+    <br>
+    <input type="submit" value="Se connecter">
+</form>
+<div id="info">
+</div>
+</body>
+</html>
+<script>
+    async function login(event) {
+        event.preventDefault();
+
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let remember = document.getElementById("remember").checked;
+
+        const response = await try_login(username, password);
+        let div = document.getElementById("info");
+        if (response.success) {
+            div.innerHTML = `<p style="color: green;">${response.message}</p>`;
+        } else {
+            div.innerHTML = `<p style="color: red;">${response.message}</p>`;
+        }
+    }
+
+    async function send_request(url) {
+        const response = await fetch(url);
+        return await response.json();
+    }
+
+    async function try_login(username, password) {
+        const encodedUsername = encodeURIComponent(username);
+        const encodedPassword = encodeURIComponent(password);
+
+        const url = `http://localhost:8000/api/login?username=${encodedUsername}&password=${encodedPassword}`;
+
+        return await send_request(url);
+    }
+
+    document.querySelector("form").addEventListener("submit", login);
+</script>
+
