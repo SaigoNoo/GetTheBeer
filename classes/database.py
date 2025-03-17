@@ -51,8 +51,9 @@ class Database:
             command = f"SELECT {name}();"
 
         self.cursor.execute(command)
+
         if to_json:
-            return loads(self.cursor.fetchone()[0])
+            return None if self.cursor.fetchone()[0] is None else loads(self.cursor.fetchone()[0])
         else:
             return self.cursor.fetchone()[0]
 
