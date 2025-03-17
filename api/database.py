@@ -8,7 +8,7 @@ def load(app: FastAPI, db: Database) -> None:
     @app.get(
         path="/api/db/test",
         description="Permet d'obtenir une confirmation de l'accès a la base de donnée",
-        tags=["db"]
+        tags=["DATABASE"]
     )
-    async def db_test() -> str:
-        return db.call(ctype="func", name="test_api")
+    async def db_test():
+        return db.call_function(name="test_api")

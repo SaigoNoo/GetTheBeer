@@ -3,6 +3,7 @@ from classes.database import Database
 import api.user
 import api.database
 
+# Database Init for API
 db = Database()
 db.connect()
 
@@ -16,7 +17,7 @@ def start(app: FastAPI):
         app.setup()
 
     """A partir d'ici, on load toutes les routes API et à la fin, on update le swagger !"""
-    api.user.load(app=app)
+    api.user.load(app=app, db=db)
     api.database.load(app=app, db=db)
 
     update_swagger()

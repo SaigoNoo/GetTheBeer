@@ -5,11 +5,12 @@ from pydantic import BaseModel
 
 class CreateUser(BaseModel):
     username: str
-    first_name: str = None
-    last_name: str = None
     password: str
+    url_avatar: str
+    last_name: str
+    first_name: str
     email: str
-    card_id: str
+    is_admin: bool = False
 
 
 class DeleteUser(BaseModel):
