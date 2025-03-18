@@ -2,21 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/connexion.css">
     <title>Login page</title>
 </head>
 <body>
-<h1>Page de connexion</h1>
-<form>
-    <label for="username">Username: </label><input id="username" type="text" placeholder="username">
-    <label for="password">Password: </label><input id="password" type="password" placeholder="password">
-    <br>
-    <input id="remember" type="checkbox"><label for="remember">Retenir ma connexion</label>
-    <br>
-    <input type="submit" value="Se connecter">
-</form>
-<div id="info">
-</div>
+    <div class="yellow-section">
+        <div class="content">
+            <h1>connexion</h1>
+            <form>
+                <label for="username">Username: </label><input id="username" type="text" placeholder="username">
+                <label for="password">Password: </label><input id="password" type="password" placeholder="password">
+                <br>
+                <input id="remember" type="checkbox"><label for="remember">Retenir ma connexion</label>
+                <br>
+                <input type="submit" value="Se connecter">
+            </form>
+            <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+        </div>
+    </div>
+    <div id="info"></div>
 </body>
+
+
 </html>
 <script>
     async function login(event) {

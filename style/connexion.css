@@ -1,0 +1,102 @@
+/* Déclaration de la font*/
+@font-face {
+    font-family: "IM FELL Great Primer SC";
+    src: url("../fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+body {
+    background: url("../img/fond.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    position: relative;
+}
+
+/* Partie jaune à droite avec opacité */
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background: rgba(180, 123, 0, 0.5);
+    border-bottom-left-radius: 100px;
+    border-top-left-radius: 100px;
+    pointer-events: none;
+}
+
+html, body {
+    overflow: hidden; /* Empêche le scroll */
+}
+
+/* Contenu principal dans la partie jaune */
+.content {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 35%;
+    transform: translateY(-50%);
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1; /* passe le cont. au dessus du jaune */
+}
+
+.content h1 {
+    font-family: "IM FELL Great Primer SC", serif;
+    font-weight: 400;
+    font-size: 38px;
+    line-height: 32px;
+    letter-spacing: -1.7%;
+    vertical-align: middle;
+    margin-bottom: 20px;
+    color: white; /* Assure que le titre soit en blanc */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+form label {
+    margin: 5px 0;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+form input[type="submit"] {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#info {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.forgot-password {
+    color: #8fb2e6;
+    text-decoration: none;
+    font-size: 16px;
+    margin-top: 10px;
+}
