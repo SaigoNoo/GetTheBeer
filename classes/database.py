@@ -1,7 +1,8 @@
-from mysql.connector import connect, Error, ProgrammingError
-from dotenv import load_dotenv
-from os import getenv
 from json import loads
+from os import getenv
+
+from dotenv import load_dotenv
+from mysql.connector import connect, Error, ProgrammingError
 
 load_dotenv()
 
@@ -38,7 +39,6 @@ class Database:
             print(f" > Erreur de clé: {err} n'existe pas dans .env ou le champ est vide !")
 
     def call_function(self, name: str, to_json: bool = False, **parameters):
-        # Si on a des paramètres, formater le dictionnaire vers des parentheses SQL et supprimer la derniere virgule crée par le tuple
         if len(parameters) > 0:
             parameters = str(tuple(parameters.values()))
             if parameters[-2] == ",":
@@ -52,13 +52,17 @@ class Database:
 
         self.cursor.execute(command)
 
+        result = self.cursor.fetchone()[0]
+
         if to_json:
-            return None if self.cursor.fetchone()[0] is None else loads(self.cursor.fetchone()[0])
+            if type(result) is type(None):
+                return None
+            else:
+                return loads(result)
         else:
-            return self.cursor.fetchone()[0]
+            return result
 
     def call_procedure(self, name: str, **parameters):
-        # Si on a des paramètres, formater le dictionnaire vers des parentheses SQL et supprimer la derniere virgule crée par le tuple
         if len(parameters) > 0:
             parameters = list(parameters.values())
 

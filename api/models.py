@@ -22,3 +22,14 @@ class DeleteUser(BaseModel):
 class Authorization(BaseModel):
     email: str
     password: str
+    token: str
+
+
+class ResetEmailRequest(BaseModel):
+    email: str
+
+
+class ResetEmailResponse(BaseModel):
+    email: str
+    new_password: str
+    confirm_password: str
