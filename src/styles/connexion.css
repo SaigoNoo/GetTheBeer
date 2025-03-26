@@ -1,0 +1,146 @@
+/* Déclaration de la font, importée depuis ggl fonts*/
+@font-face {
+    font-family: "IM FELL Great Primer SC";
+    src: url("../fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "IM FELL Great Primer SC", serif;
+    background: url("../img/fond.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    position: relative;
+}
+
+body.login-container::after {
+    content: ""; /* Définit la bande jaune sur la page de connexion */
+}
+
+/* Partie jaune à droite avec opacité réduite*/
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background: rgba(180, 123, 0, 0.5);
+    border-bottom-left-radius: 100px;
+    border-top-left-radius: 100px;
+    pointer-events: none;
+}
+
+html, body {
+    overflow: hidden; /* On veut pas de scroll */
+}
+
+/* partie jaune */
+.content {
+    position: absolute;
+    top: 30%;
+    right: 0;
+    width: 35%;
+    transform: translateY(-50%);
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1; /* passe le cont. au dessus du jaune */
+}
+
+.content h1 {
+    font-weight: 400;
+    font-size: 100px;
+    line-height: 100px;
+    letter-spacing: -1.7%;
+    vertical-align: middle;
+    margin-bottom: 20px;
+    color: white;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+form label {
+    margin: 5px 0;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+form input[type="submit"] {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#info {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.forgot-password {
+    color: #8fb2e6;
+    text-decoration: none;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/*Partie en bas à gauche avec le h1, h2 et img*/
+
+.bottom-left {
+    position: absolute;
+    bottom: 15%;
+    left: 0;
+    right: 35%; /* S'arrête avant la partie jaune */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* Centre l'ensemble entre la gauche et la partie jaune */
+    gap: 20px; 
+}
+
+.bottom-left img {
+    height: 120px;
+    width: auto;
+}
+
+.bottom-left-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.bottom-left h1 {
+    font-weight: 400;
+    font-size: 140px;
+    line-height: 150px;
+    color: white;
+    margin: 0;
+}
+
+.bottom-left h2 {
+    font-weight: 300;
+    font-size: 50px;
+    margin-top: 10px;
+    color: white;
+    margin: 0;
+}
