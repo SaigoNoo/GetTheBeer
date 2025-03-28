@@ -61,13 +61,21 @@ class Users:
                 is_admin=1 if data.is_admin else 0
             )
             return {
-                "message": "Utilisateur crée avec succès !"
+                "message": "Utilisateur créé avec succès !"
             }
         else:
             raise HTTPException(status_code=405, detail=f"{data.username} existe déjà !")
 
     def list_members(self):
         return self.db.call_function(name="show_members_admin", to_json=True)
+
+    def login_user(self, username: str, password: str):
+        user_exist = self.db.call_function(name="user_exists", username=username)
+        if user_exist == 1:
+            stored_password = self.db.call_function(name="get_user_password", username=username)
+            if stored_password == password:  # Faudra faire gaffe à hacher pour la sécurité
+                return {"message": "Connexion réussie !"}
+        raise HTTPException(status_code=401, detail="Identifiants incorrects")
 
 
 def load(app: FastAPI, db: Database) -> None:
@@ -107,3 +115,11 @@ def load(app: FastAPI, db: Database) -> None:
     )
     async def reset_password_request(data: ResetEmailRequest):
         return user.ask_reset(email=data.email)
+
+    @app.post(
+        path="/api/user/login/",
+        description="Connexion d'un utilisateur",
+        tags=["USER"]
+    )
+    async def login(username: str, password: str):
+        return user.login_user(username=username, password=password)
