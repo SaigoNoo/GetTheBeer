@@ -1,4 +1,4 @@
-/* Déclaration de la font, importée depuis ggl fonts*/
+/* Déclaration de la font, importée depuis ggl fonts */
 @font-face {
     font-family: "IM FELL Great Primer SC";
     src: url("fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
@@ -67,28 +67,64 @@ html, body {
 .main-content {
     display: flex;
     height: calc(100vh - 100px); /* Exclut le bandeau */
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    width: 100%;
 }
 
-main section {
-    flex: 1;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
+.profile-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    width: 90%;
+    max-width: 1000px;
 }
 
-.stats, .friends {
-    background-color: #1f1f1f; /* Gris très foncé */
+.profile-img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 5px solid #b38307;
+    margin-right: 30px; /* espace ajouté à droite de l'image */
+    object-fit: cover; /* Assure que l'image reste bien dans un cercle */
+}
+
+.profile-info {
+    font-size: 22px;
+    text-align: left;
+    width: 60%; /* La largeur de la biographie */
+    color: #ffffff;
+}
+
+.bio {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.stats {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #f1c40f;
+}
+
+.buttons-container {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+
+.profile-button {
+    background-color: #b38307;
     color: white;
-}
-
-.news {
-    background-color: #2c2c2c; /* Gris plus clair */
-    color: white;
-}
-
-h3 {
-    font-size: 30px;
-    color: white;
-    margin-bottom: 20px;
-    text-align: center;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
 }
