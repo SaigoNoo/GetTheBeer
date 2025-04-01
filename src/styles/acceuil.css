@@ -20,7 +20,7 @@ body::after {
     content: none;
 }
 
-/* manu haut */
+/* menu haut */
 .top-banner {
     display: flex;
     justify-content: space-between;

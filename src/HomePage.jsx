@@ -1,7 +1,9 @@
 import React from "react";
-import beerMug from "./img/beermug.png"; // Assurez-vous que le chemin est correct
+import beerMug from "./img/beermug.png";
 import "./styles/acceuil.css";
+import { useNavigate } from "react-router-dom";
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="home-page">
       {/* Header */}
@@ -11,12 +13,12 @@ const HomePage = () => {
             <img src={beerMug} alt="Logo des bières" className="logo" />
             <div className="title">
               <h1>Get The Beer</h1>
-              <h2>Le jeu de hasard des alcoolos</h2>
+              <h2>Le jeu de hasard des gens heureux</h2>
             </div>
           </div>
           <div className="right-content">
             <button className="account-btn">Mon compte</button>
-            <button className="play-btn">Jouer</button>
+            <button className="play-btn" onClick={() => navigate("/game")}>Jouer</button>
           </div>
         </div>
       </header>

@@ -34,29 +34,27 @@ const LoginPage = () => {
 
   return (
     <div className="login-container">
-      <div className="yellow-section">
-        <div className="content">
-          <h1>connexion</h1>
-          <form onSubmit={login}>
-            <label htmlFor="username">Username: </label>
-            <input id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-            <label htmlFor="password">Password: </label>
-            <input id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <br />
-            <input id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-            <label htmlFor="remember">Retenir ma connexion</label>
-            <br />
-            <input type="submit" value="Se connecter" />
-          </form>
-          {info && <div id="info">{info}</div>}
-          <a href="#" className="forgot-password">Mot de passe oublié ?</a>
-        </div>
+      <div className="content">
+        <h1>connexion</h1>
+        <form onSubmit={login}>
+          <label htmlFor="username">Username: </label>
+          <input id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label htmlFor="password">Password: </label>
+          <input id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <br />
+          <input id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <label htmlFor="remember">Retenir ma connexion</label>
+          <br />
+          <input type="submit" value="Se connecter" />
+        </form>
+        {info && <div id="info">{info}</div>}
+        <a href="#" className="forgot-password">Mot de passe oublié ?</a>
       </div>
       <div className="bottom-left">
         <img src={beerMug} alt="Icône bière" />
         <div className="bottom-left-text">
           <h1>Get The Beer</h1>
-          <h2>Le jeu de hasard des alcoolos</h2>
+          <h2>Le jeu de hasard des gens heureux</h2>
         </div>
       </div>
     </div>

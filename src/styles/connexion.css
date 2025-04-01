@@ -20,20 +20,6 @@ body.login-container::after {
     content: ""; /* Définit la bande jaune sur la page de connexion */
 }
 
-/* Partie jaune à droite avec opacité réduite*/
-body::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 35%;
-    height: 100%;
-    background: rgba(180, 123, 0, 0.5);
-    border-bottom-left-radius: 100px;
-    border-top-left-radius: 100px;
-    pointer-events: none;
-}
-
 html, body {
     overflow: hidden; /* On veut pas de scroll */
 }
@@ -52,11 +38,11 @@ html, body {
 
 .content h1 {
     font-weight: 400;
-    font-size: 100px;
-    line-height: 100px;
-    letter-spacing: -1.7%;
+    font-size: 7vw;
+    line-height: 10vw;
+    letter-spacing: -0.017em;;
     vertical-align: middle;
-    margin-bottom: 20px;
+    margin-bottom: 2%;
     color: white;
 }
 
@@ -127,6 +113,7 @@ form input[type="submit"] {
     display: flex;
     flex-direction: column;
     text-align: left;
+    text-shadow: -1px 0 black, 0 4px black, 4px 0 black, 0 -1px black;
 }
 
 .bottom-left h1 {
