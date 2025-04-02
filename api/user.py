@@ -5,11 +5,13 @@ from fastapi import FastAPI, HTTPException
 from api.models import CreateUser, ResetEmailRequest
 from classes.database import Database
 from classes.mail import Mail
+from classes.level import LevelSystem 
 
 
 class Users:
     def __init__(self, db: Database):
         self.db = db
+        self.level_system = LevelSystem(db)
 
     def get_email_from_username_or_email(self, username: str):
         if self.db.call_function(name="user_exists", username=username) == 1:
@@ -137,7 +139,7 @@ def load(app: FastAPI, db: Database) -> None:
     async def reset_password_request(data: ResetEmailRequest):
         return user.ask_reset(email=data.email)
 
-    @app.post(
+    @app.post(                      #il fallait ajouter un truc dans un autre file pour les post mais jsais plus quoi ....
         path="/api/user/login/",
         description="Connexion d'un utilisateur",
         tags=["USER"]
@@ -145,18 +147,26 @@ def load(app: FastAPI, db: Database) -> None:
     async def login(username: str, password: str):
         return user.login_user(username=username, password=password)
 
-    @app.post(
+    @app.post(                      #il fallait ajouter un truc dans un autre file pour les post mais jsais plus quoi ....
     path="/api/user/add_friend/",
     description="Permet d'ajouter un ami",
     tags=["USER"]
     )
     async def add_friend(user_id: int, friend_id: int):
         return user.add_friend(user_id=user_id, friend_id=friend_id)
- 
-    @app.post(
+
+    @app.post(                      #il fallait ajouter un truc dans un autre file pour les post mais jsais plus quoi ....
     path="/api/user/delete_friend/",
     description="Permet de supprimer un ami",
     tags=["USER"]
     )
     async def delete_friend(user_id: int, friend_id: int):
         return user.delete_friend(user_id=user_id, friend_id=friend_id)
+
+    @app.get(
+    path="/api/user/level",
+    description="Récupère le niveau et le titre d'un utilisateur",
+    tags=["USER"]
+    )
+    async def get_user_level(user_id: int):
+        return user.get_user_level(user_id)
