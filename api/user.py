@@ -86,6 +86,16 @@ class Users:
                 raise HTTPException(status_code=405, detail=f"{friend_id} est déjà dans votre liste d'amis !")
         else:
             raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
+        
+    def delete_friend(self, user_id: int, friend_id: int):
+        if self.db.call_function(name="user_exists", id=friend_id) == 1:
+            if self.db.call_function(name="is_friend", id=user_id, friend_id=friend_id) == 1:
+                self.db.call_procedure(name="delete_friend", user_id=user_id, friend_id=friend_id)
+                return {"message": "Ami supprimé avec succès !"}
+            else:
+                raise HTTPException(status_code=405, detail=f"{friend_id} n'est pas dans votre liste d'amis !")
+        else:
+            raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
 
 
 def load(app: FastAPI, db: Database) -> None:
@@ -142,4 +152,11 @@ def load(app: FastAPI, db: Database) -> None:
     )
     async def add_friend(user_id: int, friend_id: int):
         return user.add_friend(user_id=user_id, friend_id=friend_id)
-
+    
+    @app.post(
+    path="/api/user/delete_friend/",
+    description="Permet de supprimer un ami",
+    tags=["USER"]
+    )
+    async def delete_friend(user_id: int, friend_id: int):
+        return user.delete_friend(user_id=user_id, friend_id=friend_id)
