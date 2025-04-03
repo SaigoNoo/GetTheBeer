@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./styles/game.css";
 import beerMug from "./img/beermug.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 // Import images pour la roulette
 import beer1 from "./img/beer1.png";
@@ -9,6 +11,19 @@ import beer2 from "./img/beer2.png";
 import beer3 from "./img/beer3.png";
 import beer4 from "./img/beer4.png";
 import beer5 from "./img/beer5.png";
+
+function Products() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Effectuer la requête GET vers FastAPI pour récupérer les produits
+    axios.get("http://127.0.0.1:8000/products")
+      .then(response => {
+        setProducts(response.data.products); // Mise à jour du state avec les produits reçus
+      })
+      .catch(error => console.error("Erreur lors de la récupération des produits:", error));
+  }, []); // [] signifie qu'on exécute cet effet une seule fois au montage du composant
+};
 
 const images = [beer1, beer2, beer3, beer4, beer5];
 
@@ -74,14 +89,13 @@ const GamePage = () => {
       <main>
         <div className="game-container">
           <h1>🎰 C'est la roulette AAAAAA 🎰</h1>
-
           <div className="slot-machine">
             {slots.map((slot, index) => (
               <img key={index} src={slot} className={isSpinning ? "spinning" : ""} alt="slot" />
             ))}
           </div>
 
-          <button onClick={spinSlots} disabled={isSpinning}>Lancer la roulette</button>
+          <button onClick={spinSlots} disabled={isSpinning}>Lancer la roulette skibidi</button>
 
           {/* Option pour truquer le résultat */}
           <button onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
