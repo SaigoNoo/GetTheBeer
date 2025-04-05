@@ -49,6 +49,7 @@ const LoginPage = () => {
         </form>
         {info && <div id="info">{info}</div>}
         <a href="#" className="forgot-password">Mot de passe oublié ?</a>
+        <a href="/singUp" className="forgot-password" id={"link_signup"}>Créer un compte</a>
       </div>
       <div className="bottom-left">
         <img src={beerMug} alt="Icône bière" />
