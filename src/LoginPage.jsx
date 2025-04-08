@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/connexion.css";
+import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
 
 const LoginPage = () => {
@@ -33,8 +33,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="content">
+    <div className={styles["login-container"]}>
+      <div className={styles.content}>
         <h1>connexion</h1>
         <form onSubmit={login}>
           <label htmlFor="username">Username: </label>
@@ -48,12 +48,12 @@ const LoginPage = () => {
           <input type="submit" value="Se connecter" />
         </form>
         {info && <div id="info">{info}</div>}
-        <a href="#" className="forgot-password">Mot de passe oublié ?</a>
-        <a href="/singUp" className="forgot-password" id={"link_signup"}>Créer un compte</a>
+        <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
+        <a href="/signUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
       </div>
-      <div className="bottom-left">
+      <div className={styles["bottom-left"]}>
         <img src={beerMug} alt="Icône bière" />
-        <div className="bottom-left-text">
+        <div className={styles["bottom-left-text"]}>
           <h1>Get The Beer</h1>
           <h2>Le jeu de hasard des gens heureux</h2>
         </div>

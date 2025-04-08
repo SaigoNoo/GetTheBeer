@@ -1,0 +1,101 @@
+/* Déclaration de la font, importée depuis ggl fonts*/
+@font-face {
+    font-family: "IM FELL Great Primer SC";
+    src: url("../fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.signup_container {
+    font-family: "IM FELL Great Primer SC", serif;
+    background: url("../img/beermug.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    position: relative;
+}
+
+html, body {
+    overflow: hidden; /* On veut pas de scroll */
+}
+
+/* partie jaune */
+.signup_content {
+    position: absolute;
+    top: 40%;
+    right: 30%;
+    width: 35%;
+    transform: translateY(-50%);
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1; /* passe le cont. au dessus du jaune */
+}
+
+.signup_content h1 {
+    font-weight: 400;
+    font-size: 4vw;
+    line-height: 10vw;
+    letter-spacing: -0.017em;;
+    vertical-align: middle;
+    margin-bottom: 2%;
+    color: white;
+}
+
+.signup_form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.signup_form_label {
+    margin: 5px 0;
+}
+
+.signup_form_input{
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.signup_form_textarea {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    height: 50px;
+    max-height: 200px;
+    min-height: 15px;
+}
+
+
+.signup_form_checkbox {
+    margin-right: 10px;
+}
+
+.signup_form_submit {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#info {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+
+.login {
+    color: #8fb2e6;
+    text-decoration: none;
+    font-size: 16px;
+    margin-top: 10px;
+/*    text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black,
+    1px 1px black, -1px -1px black, 1px -1px black, -1px 1px black;*/
+}

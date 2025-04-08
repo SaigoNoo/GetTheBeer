@@ -6,7 +6,7 @@
     font-style: normal;
 }
 
-body {
+.login-container {
     font-family: "IM FELL Great Primer SC", serif;
     background: url("../img/fond.png") no-repeat center center fixed;
     background-size: cover;
@@ -58,13 +58,13 @@ form label {
 }
 
 form input[type="text"],
-form input[type="password"],
-form input[type="email"]{
+form input[type="password"]{
     padding: 8px;
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+
 
 form input[type="checkbox"] {
     margin-right: 10px;
@@ -84,6 +84,10 @@ form input[type="submit"] {
     font-size: 14px;
 }
 
+#link_signup{
+    float: right;
+}
+
 .forgot-password {
     color: #8fb2e6;
     text-decoration: none;
@@ -91,9 +95,7 @@ form input[type="submit"] {
     margin-top: 10px;
 }
 
-#link_signup{
-    float: right;
-}
+
 
 /*Partie en bas à gauche avec le h1, h2 et img*/
 
