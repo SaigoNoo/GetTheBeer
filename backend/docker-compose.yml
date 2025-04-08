@@ -11,7 +11,11 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - ./mariadb/instructions.sql:/docker-entrypoint-initdb.d/instructions.sql:ro
+    networks:
+      - mynetwork
 
-volumes:
-  mariadb_data:
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -13,6 +13,11 @@ class Users:
         self.db = db
         self.level_system = LevelSystem(db)
 
+    # PREMIER TEST LIENS DB
+    def test_get_all_users(self):
+        users = self.db.call_function(name="get_all_users", to_json=True)
+        return users
+
     def get_email_from_username_or_email(self, username: str):
         if self.db.call_function(name="user_exists", username=username) == 1:
             id_u = self.db.call_function(name="id_of_user", username=username)
@@ -105,6 +110,14 @@ def load(app: FastAPI, db: Database) -> None:
     Charger toutes les CALLS API
     """
     user = Users(db=db)
+
+    @app.get(
+        "/api/users",
+        description="Récupère tous les utilisateurs",
+        tags=["USER"]
+    )
+    async def get_users():
+        return user.get_all_users()
 
     @app.get(
         path="/api/user/infos",

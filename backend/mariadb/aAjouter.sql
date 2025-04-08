@@ -10,6 +10,22 @@ BEGIN
     RETURN friend_count > 0;
 END;
 
+CREATE FUNCTION get_all_users()
+RETURNS JSON
+BEGIN
+    RETURN (SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'user_ID', user_ID,
+            'nom', nom,
+            'prenom', prenom,
+            'pseudo', pseudo,
+            'mail', mail,
+            'image', image,
+            'biographie', biographie,
+            'titre', titre
+        )
+    ) FROM utilisateurs);
+END;
 
 CREATE PROCEDURE add_friend(user_id1 INT, user_id2 INT)
 BEGIN

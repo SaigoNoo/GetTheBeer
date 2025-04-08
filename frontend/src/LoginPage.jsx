@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/connexion.css";
 import beerMug from "./img/beermug.png";
+import axios from "axios";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -26,6 +27,16 @@ const LoginPage = () => {
     navigate("/home")
   };
 
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Appel à l'API FastAPI avec axios
+    axios.get("http://localhost:8000/")
+      .then(response => setData(response.data.message))
+      .catch(error => console.error("Error:", error));
+  }, []);
+  
+
   const tryLogin = async (username, password) => {
     const url = `http://localhost:8000/api/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
     const response = await fetch(url);
@@ -36,6 +47,9 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="content">
         <h1>connexion</h1>
+        <div>
+          <h1>FastAPI : {data}</h1>
+        </div>
         <form onSubmit={login}>
           <label htmlFor="username">Username: </label>
           <input id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />

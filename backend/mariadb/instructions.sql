@@ -72,3 +72,27 @@ INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biograph
 
 
 ------------------ Procédures et Fonctions --------------------
+
+CREATE FUNCTION get_all_users()
+RETURNS JSON
+BEGIN
+    RETURN (SELECT JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'user_ID', user_ID,
+            'nom', nom,
+            'prenom', prenom,
+            'pseudo', pseudo,
+            'mail', mail,
+            'image', image,
+            'biographie', biographie,
+            'titre', titre
+        )
+    ) FROM utilisateurs);
+END;
+
+CREATE FUNCTION get_user_password(username VARCHAR) RETURNS VARCHAR
+BEGIN
+    DECLARE user_pwd VARCHAR(255);
+    SELECT mdp INTO user_pwd FROM utilisateurs WHERE pseudo = username;
+    RETURN user_pwd;
+END;

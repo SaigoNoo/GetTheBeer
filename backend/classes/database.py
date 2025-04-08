@@ -14,10 +14,12 @@ class Database:
         self.commands = []
 
     def connect(self) -> connect or Error or ProgrammingError:
+        
         """
         Création d'un socket de connexion permettant la communication entre la DB et le backend FastAPI
         :return:
         """
+
         print(f" > Tentative de connexion avec {getenv(key='DB_USERNAME')}@{getenv(key='DB_SERVER')}")
         try:
             connection = connect(
