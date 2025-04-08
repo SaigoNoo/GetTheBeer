@@ -36,16 +36,16 @@ const LoginPage = () => {
     <div className={styles["login-container"]}>
       <div className={styles.content}>
         <h1>connexion</h1>
-        <form onSubmit={login}>
-          <label htmlFor="username">Username: </label>
-          <input id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <label htmlFor="password">Password: </label>
-          <input id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <form className={styles.form} onSubmit={login}>
+          <label className={styles.form_label} htmlFor="username">Username: </label>
+          <input className={styles.form_input} id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label className={styles.form_label} htmlFor="password">Password: </label>
+          <input className={styles.form_input} id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <br />
-          <input id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-          <label htmlFor="remember">Retenir ma connexion</label>
+          <input className={styles.form_checkbox} id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <label className={styles.form_label} htmlFor="remember">Retenir ma connexion</label>
           <br />
-          <input type="submit" value="Se connecter" />
+          <input className={styles.form_submit} type="submit" value="Se connecter" />
         </form>
         {info && <div id="info">{info}</div>}
         <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>

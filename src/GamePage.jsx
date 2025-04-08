@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./styles/game.css";
+import styles from "./styles/game.module.css";
 import beerMug from "./img/beermug.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -69,39 +69,39 @@ const GamePage = () => {
 
 
   return (
-    <div className="game-page">
+    <div className={styles["game-page"]}>
       <header>
-        <div className="top-banner">
-          <div className="left-content">
-            <img src={beerMug} alt="Logo des bières" className="logo" />
-            <div className="title">
+        <div className={styles["top-banner"]}>
+          <div className={styles["left-content"]}>
+            <img src={beerMug} alt="Logo des bières" className={styles.logo} />
+            <div className={styles.title}>
               <h1>Get The Beer</h1>
               <h2>Le jeu de hasard des gens heureux</h2>
             </div>
           </div>
-          <div className="right-content">
-            <button className="account-btn">Mon compte</button>
-            <button className="play-btn" onClick={() => navigate("/home")}>Retour</button>
+          <div className={styles["right-content"]}>
+            <button className={styles["account-btn"]}>Mon compte</button>
+            <button className={styles["play-btn"]} onClick={() => navigate("/home")}>Retour</button>
           </div>
         </div>
       </header>
 
       <main>
-        <div className="game-container">
+        <div className={styles["game-container"]}>
           <h1>🎰 C'est la roulette AAAAAA 🎰</h1>
-          <div className="slot-machine">
+          <div className={styles["slot-machine"]}>
             {slots.map((slot, index) => (
-              <img key={index} src={slot} className={isSpinning ? "spinning" : ""} alt="slot" />
+              <img key={index} src={slot} className={isSpinning ? styles.spinning : ""} alt="slot" />
             ))}
           </div>
 
-          <button onClick={spinSlots} disabled={isSpinning}>Lancer la roulette skibidi</button>
+          <button className={styles.button} onClick={spinSlots} disabled={isSpinning}>Lancer la roulette skibidi</button>
 
           {/* Option pour truquer le résultat */}
-          <button onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
-          <button onClick={() => setForceResult(null)}>Retour en mode aléatoire</button>
+          <button className={styles.button} onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
+          <button className={styles.button} onClick={() => setForceResult(null)}>Retour en mode aléatoire</button>
         
-          {message && <h2 className="victory-message">{message}</h2>}
+          {message && <h2 className={styles["victory-message"]}>{message}</h2>}
         </div>
       </main>
     </div>

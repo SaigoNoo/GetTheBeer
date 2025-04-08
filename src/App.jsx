@@ -3,6 +3,7 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./newAccountPage.jsx";
 import HomePage from "./HomePage";
 import GamePage from "./GamePage";
+import "./styles/global.css"
 
 function App() {
   return (

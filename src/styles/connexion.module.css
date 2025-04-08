@@ -1,11 +1,3 @@
-/* Déclaration de la font, importée depuis ggl fonts*/
-@font-face {
-    font-family: "IM FELL Great Primer SC";
-    src: url("../fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
-}
-
 .login-container {
     font-family: "IM FELL Great Primer SC", serif;
     background: url("../img/fond.png") no-repeat center center fixed;
@@ -14,14 +6,6 @@
     margin: 0;
     height: 100vh;
     position: relative;
-}
-
-body.login-container::after {
-    content: ""; /* Définit la bande jaune sur la page de connexion */
-}
-
-html, body {
-    overflow: hidden; /* On veut pas de scroll */
 }
 
 /* partie jaune */
@@ -46,19 +30,18 @@ html, body {
     color: white;
 }
 
-form {
+.form {
     display: flex;
     flex-direction: column;
     gap: 10px;
     font-size: 18px;
 }
 
-form label {
+.form_label {
     margin: 5px 0;
 }
 
-form input[type="text"],
-form input[type="password"]{
+.form_input{
     padding: 8px;
     font-size: 16px;
     border-radius: 5px;
@@ -66,11 +49,11 @@ form input[type="password"]{
 }
 
 
-form input[type="checkbox"] {
+.form_checkbox {
     margin-right: 10px;
 }
 
-form input[type="submit"] {
+.form_submit {
     background-color: #b47b00;
     color: white;
     padding: 10px;
