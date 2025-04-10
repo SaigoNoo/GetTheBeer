@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 def load(app: FastAPI, db: Database) -> None:
     """Charger toutes les CALLS API"""
 
@@ -14,11 +15,12 @@ def load(app: FastAPI, db: Database) -> None:
         tags=["DATABASE"]
     )
     async def db_test():
-        return db.call_function(name="test_api")
-    
+        return db.call_function(name="test_api")  
 
 # URL de connexion à la base de données MariaDB
-SQLALCHEMY_DATABASE_URL = "mariadb+mariadbconnector://myuser:mypassword@localhost/mydatabase"
+
+
+SQLALCHEMY_DATABASE_URL = "mariadb+mariadbconnector://myuser:mypassword@mariadb_container:3306/mydatabase"
 
 # Créer une instance d'un moteur SQLAlchemy
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=10, max_overflow=20)

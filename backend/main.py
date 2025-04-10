@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from db_utils import recup
 
 app = FastAPI()
 
@@ -17,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],  # Accepter tous les headers
 )
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def read_root():
+    print(recup())
     return {"message": "Hello World"}
