@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/connexion.css";
+import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
 import axios from "axios";
 
@@ -44,30 +44,30 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="content">
+    <div className={styles["login-container"]}>
+      <div className={styles.content}>
         <h1>connexion</h1>
         <div>
           <h1>FastAPI : {data}</h1>
         </div>
-        <form onSubmit={login}>
-          <label htmlFor="username">Username: </label>
-          <input id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <label htmlFor="password">Password: </label>
-          <input id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <form className={styles.form} onSubmit={login}>
+          <label className={styles.form_label} htmlFor="username">Username: </label>
+          <input className={styles.form_input} id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label className={styles.form_label} htmlFor="password">Password: </label>
+          <input className={styles.form_input} id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <br />
-          <input id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-          <label htmlFor="remember">Retenir ma connexion</label>
+          <input className={styles.form_checkbox} id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <label className={styles.form_label} htmlFor="remember">Retenir ma connexion</label>
           <br />
-          <input type="submit" value="Se connecter" />
+          <input className={styles.form_submit} type="submit" value="Se connecter" />
         </form>
         {info && <div id="info">{info}</div>}
-        <a href="#" className="forgot-password">Mot de passe oublié ?</a>
-        <a href="/singUp" className="forgot-password" id={"link_signup"}>Créer un compte</a>
+        <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
+        <a href="/singUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
       </div>
-      <div className="bottom-left">
+      <div className={styles["bottom-left"]}>
         <img src={beerMug} alt="Icône bière" />
-        <div className="bottom-left-text">
+        <div className={styles["bottom-left-text"]}>
           <h1>Get The Beer</h1>
           <h2>Le jeu de hasard des gens heureux</h2>
         </div>

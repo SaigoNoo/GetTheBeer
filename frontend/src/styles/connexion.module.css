@@ -1,12 +1,4 @@
-/* Déclaration de la font, importée depuis ggl fonts*/
-@font-face {
-    font-family: "IM FELL Great Primer SC";
-    src: url("../fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
-}
-
-body {
+.login-container {
     font-family: "IM FELL Great Primer SC", serif;
     background: url("../img/fond.png") no-repeat center center fixed;
     background-size: cover;
@@ -14,14 +6,6 @@ body {
     margin: 0;
     height: 100vh;
     position: relative;
-}
-
-body.login-container::after {
-    content: ""; /* Définit la bande jaune sur la page de connexion */
-}
-
-html, body {
-    overflow: hidden; /* On veut pas de scroll */
 }
 
 /* partie jaune */
@@ -46,31 +30,30 @@ html, body {
     color: white;
 }
 
-form {
+.form {
     display: flex;
     flex-direction: column;
     gap: 10px;
     font-size: 18px;
 }
 
-form label {
+.form_label {
     margin: 5px 0;
 }
 
-form input[type="text"],
-form input[type="password"],
-form input[type="email"]{
+.form_input{
     padding: 8px;
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid #ccc;
 }
 
-form input[type="checkbox"] {
+
+.form_checkbox {
     margin-right: 10px;
 }
 
-form input[type="submit"] {
+.form_submit {
     background-color: #b47b00;
     color: white;
     padding: 10px;
@@ -84,6 +67,10 @@ form input[type="submit"] {
     font-size: 14px;
 }
 
+#link_signup{
+    float: right;
+}
+
 .forgot-password {
     color: #8fb2e6;
     text-decoration: none;
@@ -91,9 +78,7 @@ form input[type="submit"] {
     margin-top: 10px;
 }
 
-#link_signup{
-    float: right;
-}
+
 
 /*Partie en bas à gauche avec le h1, h2 et img*/
 
@@ -106,7 +91,7 @@ form input[type="submit"] {
     flex-direction: row;
     align-items: center;
     justify-content: center; /* Centre l'ensemble entre la gauche et la partie jaune */
-    gap: 20px; 
+    gap: 20px;
 }
 
 .bottom-left img {

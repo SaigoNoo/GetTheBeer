@@ -1,25 +1,3 @@
-/* Déclaration de la font, importée depuis ggl fonts*/
-@font-face {
-    font-family: "IM FELL Great Primer SC";
-    src: url("fonts/IMFellGreatPrimerSC-Regular.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
-}
-
-body {
-    background-color: black;
-    margin: 0;
-    font-family: "IM FELL Great Primer SC";
-}
-
-html, body {
-    overflow: hidden; /* On veut pas de scroll */
-}
-
-body::after {
-    content: none;
-}
-
 /* menu haut */
 .top-banner {
     display: flex;
@@ -73,7 +51,7 @@ body::after {
     height: calc(100vh - 100px); /* Exclut le bandeau */
 }
 
-main section {
+.main-content section {
     flex: 1;
     padding: 20px;
     box-sizing: border-box;
