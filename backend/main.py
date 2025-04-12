@@ -1,6 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from db_utils import recup
+from pydantic import BaseModel
+from db_utils import recup, create_account
+
+class UserSignup(BaseModel):
+    nom: str
+    prenom: str
+    pseudo: str
+    mail: str
+    motdepasse: str
+    biographie: str
 
 app = FastAPI()
 
@@ -19,8 +28,28 @@ app.add_middleware(
 )
 
 # Base.metadata.create_all(bind=engine)
-
+"""
 @app.get("/")
 def read_root():
     print(recup())
     return {"message": "Hello World"}
+"""
+# Nouvel endpoint pour l'inscription
+@app.post("/api/signup")
+def signup(user: UserSignup):
+    try:
+        success = create_account(
+            user.nom,
+            user.prenom,
+            user.pseudo,
+            user.mail,
+            user.motdepasse,
+            user.biographie
+        )
+
+        if success:
+            return {"message": "Inscription réussie!"}
+        else:
+            raise HTTPException(status_code=400, detail="Échec de l'inscription")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
