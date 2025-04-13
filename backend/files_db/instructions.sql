@@ -9,66 +9,66 @@ CREATE TABLE utilisateurs (
     image VARCHAR(255),
     motdepasse VARCHAR(255),
     biographie TEXT,
-    titre VARCHAR(100)
-);
-
-
-CREATE TABLE bieres_utilisateur (
-    ID_user INT UNSIGNED,
-    bieres_restantes INT DEFAULT 0,
-    FOREIGN KEY (ID_user) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
+    reserve_biere INT DEFAULT 0,
+    biere_gagnee INT DEFAULT 0,
+    ID_level INT UNSIGNED NOT NULL,
+    FOREIGN KEY (ID_level) REFERENCES niveaux(ID_level) ON DELETE CASCADE
 );
 
 
 CREATE TABLE amis (
-    IDuser1 INT UNSIGNED,
-    IDuser2 INT UNSIGNED,
+    IDuser1 INT UNSIGNED NOT NULL,
+    IDuser2 INT UNSIGNED NOT NULL,
     PRIMARY KEY (IDuser1, IDuser2),
     FOREIGN KEY (IDuser1) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
     FOREIGN KEY (IDuser2) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
 );
 
 
+CREATE TABLE duel (
+    user_ID INT UNSIGNED NOT NULL,
+    Game_ID INT UNSIGNED NOT NULL,
+    PRIMARY KEY (user_ID, Game_ID),
+    FOREIGN KEY (user_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
+    FOREIGN KEY (Game_ID) REFERENCES jeux(Game_ID) ON DELETE CASCADE
+);
+
+
 CREATE TABLE jeux (
     Game_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME,
-    gagnant_ID INT UNSIGNED,
+    gagnant_ID INT UNSIGNED NOT NULL,
     bieres_en_jeu INT,
-    IDuser1 INT UNSIGNED,
-    IDuser2 INT UNSIGNED,
-    FOREIGN KEY (gagnant_ID) REFERENCES utilisateurs(user_ID) ON DELETE SET NULL,
-    FOREIGN KEY (IDuser1) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
-    FOREIGN KEY (IDuser2) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
+    FOREIGN KEY (gagnant_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
 );
 
 
 CREATE TABLE niveaux (
     ID_level INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    level_name VARCHAR(100),
-    min_bieres INT
+    title_ID INT UNSIGNED NOT NULL,
+    min_bieres INT,
+    FOREIGN KEY (title_ID) REFERENCES titre(title_ID) ON DELETE CASCADE
 );
 
-
-CREATE TABLE niveau_utilisateur (
-    ID_user INT UNSIGNED,
-    level_ID INT UNSIGNED,
-    date_obtention DATE,
-    xp INT,
-    PRIMARY KEY (ID_user, level_ID),
-    FOREIGN KEY (ID_user) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
-    FOREIGN KEY (level_ID) REFERENCES niveaux(ID_level) ON DELETE CASCADE
+CREATE TABLE titre (
+    title_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title_name VARCHAR(100)
 );
 
 
 ------------------ Ajout des données de base --------------------
 
 
-INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biographie, titre) VALUES
-('Valcke', 'Tristan', 'Trisouille', 't.valcke@students.ephec.be', 'tris.png', 'user123', 'Voici ma bio', 'Sage comme une image'),
-('Preat', 'Thomas', 'TomPrt', 'thomas.preat@students.ephec.be', 'thomas.png', 'preat123', 'Toujours le sourire !', 'Le Charmeur'),
-('Rocquet', 'Arnaud', 'Rocqnoob', 'arnaud.rocquet@students.ephec.be', 'arnaud.jpg', 'rocquet456', 'Master en dégustation de pils.', 'Le Stratège'),
-('Doussis', 'Giorgios', 'GeoTheGreek', 'giorgios.doussis@students.ephec.be', 'giorgios.png', 'greece789', 'J’amène le soleil avec moi.', 'Le Méditerranéen'),
-('Kwizera', 'Dorian', 'DKwiz', 'dorian.kwizera@students.ephec.be', 'dorian.jpg', 'kwz321', 'Toujours partant pour un défi.', 'Le Compétiteur');
+INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biographie, ID_level) VALUES
+('Valcke', 'Tristan', 'Trisouille', 't.valcke@students.ephec.be', 'tris.png', 'user123', 'Voici ma bio', 1),
+('Preat', 'Thomas', 'TomPrt', 'thomas.preat@students.ephec.be', 'thomas.png', 'preat123', 'Toujours le sourire !', 1),
+('Roquet', 'Arnaud', 'Roqnoob', 'arnaud.roquet@students.ephec.be', 'arnaud.jpg', 'roquet456', 'Master en dégustation de pils.', 1),
+('Doussis', 'Giorgios', 'GeoTheGreek', 'giorgios.doussis@students.ephec.be', 'giorgios.png', 'greece789', 'J’amène le soleil avec moi.', 1),
+('Kwizera', 'Dorian', 'DKwiz', 'dorian.kwizera@students.ephec.be', 'dorian.jpg', 'kwz321', 'Toujours partant pour un défi.', 1);
+
+INSERT INTO niveaux (title_ID, min_bieres) VALUES (1, 0);
+
+INSERT INTO titre (title_name) VALUES ('Nouveau venu');
 
 
 ------------------ Procédures et Fonctions --------------------
