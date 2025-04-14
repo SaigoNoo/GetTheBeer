@@ -4,13 +4,14 @@ from pydantic import BaseModel
 
 
 class CreateUser(BaseModel):
+    l_name: str
+    f_name: str
     username: str
+    mail: str
+    image: bytes
     password: str
-    url_avatar: str
-    last_name: str
-    first_name: str
-    email: str
-    is_admin: bool = False
+    bio: str
+    desc: str
 
 
 class DeleteUser(BaseModel):
@@ -30,6 +31,5 @@ class ResetEmailRequest(BaseModel):
 
 
 class ResetEmailResponse(BaseModel):
-    email: str
-    new_password: str
-    confirm_password: str
+    token: str
+    password: str

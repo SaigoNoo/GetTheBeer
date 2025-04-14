@@ -44,7 +44,6 @@ class Database:
             if parameters[-2] == ",":
                 parameters = f"{parameters[:-2]})"
 
-        # Si on a pas de paramètres, ne pas laisser de None dans la fonction
         if len(parameters) > 0:
             command = f"SELECT {name}{parameters};"
         else:
@@ -65,8 +64,5 @@ class Database:
     def call_procedure(self, name: str, **parameters):
         if len(parameters) > 0:
             parameters = list(parameters.values())
-
-        print(f"CALL {name}({', '.join(repr(p) for p in parameters)});")
-
         self.cursor.callproc(name, parameters)
         self.socket.commit()
