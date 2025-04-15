@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-import api.user
+import api.user as user_api
 from classes.database import Database
 
 # Database Init for API
@@ -24,6 +24,6 @@ def start(app: FastAPI):
     """
     A partir d'ici, on load toutes les routes API et à la fin, on update le swagger !
     """
-    api.user.load(app=app, db=db)
+    user_api.load(app=app, db=db)
 
     update_swagger()
