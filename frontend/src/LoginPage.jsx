@@ -48,7 +48,7 @@ const LoginPage = () => {
       <div className={styles.content}>
         <h1>connexion</h1>
         <div>
-          <h1>FastAPI : {data}</h1>
+          <h5>FastAPI : {data}</h5>
         </div>
         <form className={styles.form} onSubmit={login}>
           <label className={styles.form_label} htmlFor="username">Username: </label>
@@ -63,7 +63,7 @@ const LoginPage = () => {
         </form>
         {info && <div id="info">{info}</div>}
         <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
-        <a href="/singUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
+        <a href="/signUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
       </div>
       <div className={styles["bottom-left"]}>
         <img src={beerMug} alt="Icône bière" />
