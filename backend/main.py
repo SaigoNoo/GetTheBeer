@@ -53,3 +53,18 @@ def signup(user: UserSignup):
             raise HTTPException(status_code=400, detail="Échec de l'inscription")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
+
+# Endpoint pour la connexion
+class UserLogin(BaseModel):
+    pseudo: str
+    motdepasse: str
+
+@app.post("/api/login")
+def login(user: UserLogin):
+    try:
+        if verify_user(user.pseudo, user.motdepasse):
+            return {"message": "Connexion réussie"}
+        else:
+            raise HTTPException(status_code=401, detail="Identifiants incorrects")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")

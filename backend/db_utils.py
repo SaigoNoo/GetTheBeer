@@ -24,8 +24,8 @@ def recup():
     cur.execute("SELECT * FROM utilisateurs;")
     print(cur.fetchall())
 
+
 def create_account(nom, prenom, pseudo, mail, motdepasse, biographie):
-    print("test")
     try:
         # Requête SQL préparée pour éviter les injections SQL
         query = f"INSERT INTO utilisateurs (nom, prenom, pseudo, mail, motdepasse, biographie) VALUES (?, ?, ?, ?, ?, ?)"
@@ -35,4 +35,19 @@ def create_account(nom, prenom, pseudo, mail, motdepasse, biographie):
     except Exception as e:
         print(f"Erreur lors de la création du compte : {e}")
         conn.rollback()  # Annuler la transaction en cas d'erreur
+        return False
+
+
+def verify_user(pseudo, motdepasse):
+    try:
+        cur.execute("SELECT * FROM utilisateurs WHERE pseudo = ? AND motdepasse = ?", (pseudo, motdepasse))
+        user = cur.fetchone()
+
+        if user:
+            return True
+        else:
+            print(f"Utilisateur non trouvé pour pseudo: {pseudo}")
+            return False
+    except Exception as e:
+        print(f"Erreur lors de la vérification de l'utilisateur : {e}")
         return False

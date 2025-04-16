@@ -12,19 +12,19 @@ class LevelSystem:
     def get_level_and_title(self, beers_won: int):
         level = 1
         title = "Noob du comptoir"
-        
+
         for threshold, name in self.LEVEL_THRESHOLDS:
             if beers_won >= threshold:
                 level = threshold
                 title = name
             else:
                 break
-        
+
         return level, title
 
     def update_user_level(self, user_id: int):
         beers_won = self.db.call_function("get_user_beers", id=user_id)
         level, title = self.get_level_and_title(beers_won)
-        
+
         self.db.call_procedure("update_user_level", id=user_id, level=level, title=title)
         return {"level": level, "title": title}
