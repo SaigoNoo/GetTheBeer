@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from db_utils import recup, create_account
+from db_utils import recup, create_account, get_friends
 
 class UserSignup(BaseModel):
     nom: str
@@ -21,20 +21,13 @@ origins = [
 # Appliquer CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Permettre l'accès uniquement depuis localhost:3000
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Accepter toutes les méthodes (GET, POST, etc.)
-    allow_headers=["*"],  # Accepter tous les headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Base.metadata.create_all(bind=engine)
-"""
-@app.get("/")
-def read_root():
-    print(recup())
-    return {"message": "Hello World"}
-"""
-# Nouvel endpoint pour l'inscription
+# Endpoint d'inscription
 @app.post("/api/signup")
 def signup(user: UserSignup):
     try:
@@ -54,17 +47,10 @@ def signup(user: UserSignup):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
 
-# Endpoint pour la connexion
-class UserLogin(BaseModel):
-    pseudo: str
-    motdepasse: str
-
-@app.post("/api/login")
-def login(user: UserLogin):
+# Endpoint pour récupérer les amis d’un utilisateur
+@app.get("/api/friends/{user_id}")
+def friends(user_id: int):
     try:
-        if verify_user(user.pseudo, user.motdepasse):
-            return {"message": "Connexion réussie"}
-        else:
-            raise HTTPException(status_code=401, detail="Identifiants incorrects")
+        return {"amis": get_friends(user_id)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

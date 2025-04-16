@@ -14,7 +14,7 @@ class Database:
         self.commands = []
 
     def connect(self) -> connect or Error or ProgrammingError:
-
+        
         """
         Création d'un socket de connexion permettant la communication entre la DB et le backend FastAPI
         :return:

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
@@ -11,22 +11,8 @@ const LoginPage = () => {
   const [info, setInfo] = useState("");
   const navigate = useNavigate(); // Pour naviguer après connexion
 
-  const tryLogin = async (username, password) => {
-    try {
-      const response = await axios.post("http://localhost:8000/api/login", {
-        pseudo: username,
-        motdepasse: password,
-      });
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        return { success: false, message: "Identifiants incorrects." };
-      }
-      return { success: false, message: "Erreur lors de la connexion." };
-    }
-  };
-
   const login = async (event) => {
+    {/*
     event.preventDefault();
     const response = await tryLogin(username, password);
     if (response.success) {
@@ -37,46 +23,47 @@ const LoginPage = () => {
     } else {
       setInfo(<p style={{ color: "red" }}>{response.message}</p>);
     }
+    */}
+    navigate("/home")
+  };
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Appel à l'API FastAPI avec axios
+    axios.get("http://localhost:8000/")
+      .then(response => setData(response.data.message))
+      .catch(error => console.error("Error:", error));
+  }, []);
+  
+
+  const tryLogin = async (username, password) => {
+    const url = `http://localhost:8000/api/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+    const response = await fetch(url);
+    return await response.json();
   };
 
   return (
     <div className={styles["login-container"]}>
       <div className={styles.content}>
         <h1>connexion</h1>
+        <div>
+          <h1>FastAPI : {data}</h1>
+        </div>
         <form className={styles.form} onSubmit={login}>
           <label className={styles.form_label} htmlFor="username">Username: </label>
-          <input
-            className={styles.form_input}
-            id="username"
-            type="text"
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <input className={styles.form_input} id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <label className={styles.form_label} htmlFor="password">Password: </label>
-          <input
-            className={styles.form_input}
-            id="password"
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input className={styles.form_input} id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <br />
-          <input
-            className={styles.form_checkbox}
-            id="remember"
-            type="checkbox"
-            checked={remember}
-            onChange={(e) => setRemember(e.target.checked)}
-          />
+          <input className={styles.form_checkbox} id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
           <label className={styles.form_label} htmlFor="remember">Retenir ma connexion</label>
           <br />
           <input className={styles.form_submit} type="submit" value="Se connecter" />
         </form>
         {info && <div id="info">{info}</div>}
         <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
-        <a href="/signUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
+        <a href="/singUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
       </div>
       <div className={styles["bottom-left"]}>
         <img src={beerMug} alt="Icône bière" />
