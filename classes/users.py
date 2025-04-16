@@ -98,3 +98,37 @@ class UsersAPI:
 
     def list_members(self):
         return self.db.call_function(name="get_all_users", to_json=True)
+
+    def login_user(self, username: str, password: str):
+        if self.user_exist(email=username):
+            stored_password = self.db.call_function(name="get_user_password", username=username)
+            if stored_password == password:  # Faudra faire gaffe à hacher pour la sécurité
+                return {
+                    "code": "SUCCESS_LOGIN",
+                    "message": "Connexion réussie !"
+                }
+            else:
+                return {
+                    "code": "FAIL_LOGIN",
+                    "message": "Connexion échouée !"
+                }
+
+    def add_friend(self, user_id: int, friend_id: int):
+        if self.user_exist(email=self.get_mail(id_user=user_id)):
+            if self.db.call_function(name="is_friend", id=user_id, friend_id=friend_id) == 0:
+                self.db.call_procedure(name="add_friend", user_id=user_id, friend_id=friend_id)
+                return {"message": "Ami ajouté avec succès !"}
+            else:
+                raise HTTPException(status_code=405, detail=f"{friend_id} est déjà dans votre liste d'amis !")
+        else:
+            raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
+
+    def delete_friend(self, user_id: int, friend_id: int):
+        if self.user_exist(email=self.get_mail(id_user=user_id)):
+            if self.db.call_function(name="is_friend", id=user_id, friend_id=friend_id) == 1:
+                self.db.call_procedure(name="delete_friend", user_id=user_id, friend_id=friend_id)
+                return {"message": "Ami supprimé avec succès !"}
+            else:
+                raise HTTPException(status_code=405, detail=f"{friend_id} n'est pas dans votre liste d'amis !")
+        else:
+            raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
