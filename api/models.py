@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional, Dict, Any
+
 
 """Pour les requests POST, on crée un model, qui coorespond a l'en-tête HTTP a insérer lors du POST"""
 
@@ -33,3 +35,10 @@ class ResetEmailRequest(BaseModel):
 class ResetEmailResponse(BaseModel):
     token: str
     password: str
+
+
+class SendMail(BaseModel):
+    email: str
+    subject: str
+    file: str
+    extra: Optional[Dict[str, Any]] = {}

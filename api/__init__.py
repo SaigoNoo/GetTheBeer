@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 import api.user as user_api
+import api.mail as mail_api
+
 from classes.database import Database
 
 # Database Init for API
@@ -25,5 +27,6 @@ def start(app: FastAPI):
     A partir d'ici, on load toutes les routes API et à la fin, on update le swagger !
     """
     user_api.load(app=app, db=db)
+    mail_api.load(app=app)
 
     update_swagger()
