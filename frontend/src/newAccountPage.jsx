@@ -26,7 +26,7 @@ const SignupPage = () => {
         event.preventDefault();
 
         if (formData.motdepasse !== formData.confirmPassword) {
-            setInfo(<p style={{ color: "red" }}>Les mots de passe ne correspondent pas.</p>);
+            setInfo("Les mots de passe ne correspondent pas.");
             return;
         }
 
@@ -42,14 +42,39 @@ const SignupPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setInfo(<p style={{ color: "green" }}>{data.message}</p>);
-                setTimeout(() => navigate("/home"), 1000);
+                setInfo(data.message);
+                setTimeout(() => navigate(`/home?id=${data.userId}`), 1000);
             } else {
-                setInfo(<p style={{ color: "red" }}>{data.message}</p>);
+                // Traduire l'erreur technique en message utilisateur
+                setInfo(formatErrorMessage(data.detail));
             }
         } catch (error) {
-            setInfo(<p style={{ color: "red" }}>Erreur lors de l'inscription.</p>);
+            setInfo("Erreur lors de l'inscription.");
         }
+    };
+
+    // Fonction pour formater les messages d'erreur
+    const formatErrorMessage = (errorDetail) => {
+        const errorMessage = String(errorDetail);
+
+        // Messages d'erreur spécifiques pour les problèmes courants
+        if (errorMessage.includes("Duplicate entry") && errorMessage.includes("for key 'mail'")) {
+            const email = errorMessage.match(/'([^']+)'/)[1];
+            return `L'adresse email ${email} est déjà utilisée.`;
+        }
+
+        if (errorMessage.includes("Duplicate entry") && errorMessage.includes("for key 'pseudo'")) {
+            const pseudo = errorMessage.match(/'([^']+)'/)[1];
+            return `Le pseudo ${pseudo} est déjà pris.`;
+        }
+
+        // Autres cas d'erreurs possibles
+        if (errorMessage.includes("Data too long")) {
+            return "Une des informations saisies dépasse la longueur autorisée.";
+        }
+
+        // Message par défaut si aucun pattern ne correspond
+        return `Erreur lors de l'inscription : ${errorDetail}`;
     };
 
     return (
