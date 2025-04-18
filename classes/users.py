@@ -39,6 +39,12 @@ class UsersAPI:
                 return line["mail"]
         return None
 
+    def get_username(self, email: str):
+        for line in self.db.call_function(name="get_all_users", to_json=True):
+            if line["mail"] == email:
+                return line["pseudo"]
+        return None
+
     def ask_reset(self, email: str):
         if self.user_exist(email=email):
             id_u = self.get_id(email=email)
@@ -100,18 +106,24 @@ class UsersAPI:
         return self.db.call_function(name="get_all_users", to_json=True)
 
     def login_user(self, username: str, password: str):
-        if self.user_exist(email=username):
+        if "@" in username:
+            email = username
+            username = self.get_username(email=username)
+        else:
+            email = username
+        if self.user_exist(email=email):
             stored_password = self.db.call_function(name="get_user_password", username=username)
             if stored_password == password:  # Faudra faire gaffe à hacher pour la sécurité
                 return {
+                    "success": True,
                     "code": "SUCCESS_LOGIN",
                     "message": "Connexion réussie !"
                 }
-            else:
-                return {
-                    "code": "FAIL_LOGIN",
-                    "message": "Connexion échouée !"
-                }
+        return {
+            "success": False,
+            "code": "FAIL_LOGIN",
+            "message": "Connexion échouée !"
+        }
 
     def add_friend(self, user_id: int, friend_id: int):
         if self.user_exist(email=self.get_mail(id_user=user_id)):
