@@ -11,7 +11,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mariadb/instructions.sql:/docker-entrypoint-initdb.d/instructions.sql:ro
+      - ./files_db/instructions.sql:/docker-entrypoint-initdb.d/instructions.sql:ro
     networks:
       - mynetwork
 
