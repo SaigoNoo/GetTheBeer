@@ -44,7 +44,6 @@ const LoginPage = () => {
       credentials: "include", // <-- clé pour la session !
       body: JSON.stringify({ username, password }),
     });
-    console.log(response.json())
     return await response.json();
   };
 
