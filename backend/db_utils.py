@@ -13,7 +13,6 @@ try:
     )
 except Exception as e:
     print(f"Error connecting to MariaDB Platform: {e}")
-    print(f"Error connecting to MariaDB Platform")
     sys.exit(1)
 
 # Get cursor
@@ -51,3 +50,11 @@ def create_account(nom, prenom, pseudo, mail, motdepasse, biographie):
         print(f"Erreur lors de la création du compte : {e}")
         conn.rollback()  # Annuler la transaction en cas d'erreur
         return str(e)
+
+def login_db(username):
+    try:
+        query = "SELECT user_ID, motdepasse FROM utilisateurs WHERE pseudo = ?"
+        cur.execute(query, (username,))
+        return cur.fetchone()
+    except Exception as e:
+        print ("Erreur : ", e)

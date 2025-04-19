@@ -12,7 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate(); // Pour naviguer après connexion
 
   const login = async (event) => {
-    {/*
+    {
     event.preventDefault();
     const response = await tryLogin(username, password);
     if (response.success) {
@@ -23,8 +23,8 @@ const LoginPage = () => {
     } else {
       setInfo(<p style={{ color: "red" }}>{response.message}</p>);
     }
-    */}
-    navigate("/home")
+    }
+    //navigate("/home")
   };
 
   const [data, setData] = useState(null);
@@ -38,8 +38,13 @@ const LoginPage = () => {
   
 
   const tryLogin = async (username, password) => {
-    const url = `http://localhost:8000/api/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-    const response = await fetch(url);
+    const response = await fetch("http://localhost:8000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // <-- clé pour la session !
+      body: JSON.stringify({ username, password }),
+    });
+    console.log(response.json())
     return await response.json();
   };
 
