@@ -1,4 +1,4 @@
------------------- Création des tables --------------------
+-- ---------------- Création des tables --------------------
 
 CREATE TABLE titre (
     title_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -19,9 +19,9 @@ CREATE TABLE utilisateurs (
     pseudo VARCHAR(100) UNIQUE,
     mail VARCHAR(255) UNIQUE,
     image VARCHAR(255),
-    motdepasse VARCHAR(255),
+    motdepasse VARBINARY(60),
     biographie TEXT,
-    reserve_biere INT DEFAULT 0,
+    reserve_biere INT DEFAULT 10,
     biere_gagnee INT DEFAULT 0,
     ID_level INT UNSIGNED NOT NULL DEFAULT 1,
     FOREIGN KEY (ID_level) REFERENCES niveaux(ID_level) ON DELETE CASCADE
@@ -31,6 +31,7 @@ CREATE TABLE utilisateurs (
 CREATE TABLE amis (
     IDuser1 INT UNSIGNED NOT NULL,
     IDuser2 INT UNSIGNED NOT NULL,
+    biere_du SMALLINT DEFAULT 0,
     PRIMARY KEY (IDuser1, IDuser2),
     FOREIGN KEY (IDuser1) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
     FOREIGN KEY (IDuser2) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
@@ -55,42 +56,22 @@ CREATE TABLE duel (
 );
 
 
------------------- Ajout des données de base --------------------
+-- ---------------- Ajout des données de base --------------------
 
 INSERT INTO titre (title_name) VALUES ('Nouveau venu');
 
 INSERT INTO niveaux (title_ID, min_bieres) VALUES (1, 0);
 
 INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biographie) VALUES
-('Valcke', 'Tristan', 'Trisouille', 't.valcke@students.ephec.be', 'tris.png', 'user123', 'Voici ma bio'),
-('Preat', 'Thomas', 'TomPrt', 'thomas.preat@students.ephec.be', 'thomas.png', 'preat123', 'Toujours le sourire !'),
-('Roquet', 'Arnaud', 'Roqnoob', 'arnaud.roquet@students.ephec.be', 'arnaud.jpg', 'roquet456', 'Master en dégustation de pils.'),
-('Doussis', 'Giorgios', 'GeoTheGreek', 'giorgios.doussis@students.ephec.be', 'giorgios.png', 'greece789', 'J’amène le soleil avec moi.'),
-('Kwizera', 'Dorian', 'DKwiz', 'dorian.kwizera@students.ephec.be', 'dorian.jpg', 'kwz321', 'Toujours partant pour un défi.');
+('Valcke', 'Tristan', 'Trisouille', 't.valcke@students.ephec.be', 'tris.png', '$2b$12$WMwXzaY3ZQZW9/deHJeaLOz0LdLC9AkQTr8oUwEGH.CuX8Dh.8AXq', 'Voici ma bio'),
+('Preat', 'Thomas', 'TomPrt', 'thomas.preat@students.ephec.be', 'thomas.png', '$2b$12$enuAKi57zLInxMWcwq9uP.RqAjqbqQ3xYdSiopqyQnN/rwySezWHu', 'Toujours le sourire !'),
+('Roquet', 'Arnaud', 'Roqnoob', 'arnaud.roquet@students.ephec.be', 'arnaud.jpg', '$2b$12$A/3DJii5iWUTQXzg.EbrCu08Vz0Txak3tvwJkJ77r8Wy4OuE/FEjC', 'Master en dégustation de pils.'),
+('Doussis', 'Giorgios', 'GeoTheGreek', 'giorgios.doussis@students.ephec.be', 'giorgios.png', '$2b$12$V9JBGxbPZ51brUVA4ctRk.8bFsNKNSU.KFXsee1.BJ/y31K3mGZ.e', 'J’amène le soleil avec moi.'),
+('Kwizera', 'Dorian', 'DKwiz', 'dorian.kwizera@students.ephec.be', 'dorian.jpg', '$2b$12$obCmp53OrFY3.3UgPAOSI.HQD5o3WCfBu88r0.V.zSbGuq6sHKqWu', 'Toujours partant pour un défi.');
 
-
------------------- Procédures et Fonctions --------------------
-
-CREATE FUNCTION get_all_users()
-RETURNS JSON
-BEGIN
-    RETURN (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'user_ID', user_ID,
-            'nom', nom,
-            'prenom', prenom,
-            'pseudo', pseudo,
-            'mail', mail,
-            'image', image,
-            'biographie', biographie,
-            'titre', titre
-        )
-    ) FROM utilisateurs);
-END;
-
-CREATE FUNCTION get_user_password(username VARCHAR) RETURNS VARCHAR
-BEGIN
-    DECLARE user_pwd VARCHAR(255);
-    SELECT mdp INTO user_pwd FROM utilisateurs WHERE pseudo = username;
-    RETURN user_pwd;
-END;
+-- mdp :
+    -- Trisouille : "user123"
+    -- TomPrt : "preat123"
+    -- Roqnoob : "roquet456"
+    -- GeoTheGreek : "greece789"
+    -- DKwiz : "kwz321"

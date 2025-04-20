@@ -4,9 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from db_utils import recup, create_account, get_username, login_db
-from passlib.context import CryptContext    #Crypter le mot de passe
+import bcrypt    #Crypter le mot de passe
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserSignup(BaseModel):
     nom: str
@@ -20,7 +19,7 @@ app = FastAPI()
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="votre_cle_secrete",
+    secret_key="user123",   # à changer une fois en production
     max_age=3600    # max_age en secondes
 )
 
@@ -51,7 +50,7 @@ def read_root():
 @app.post("/api/signup")
 def signup(user: UserSignup):
     try:
-        hashed_password = pwd_context.hash(user.motdepasse)
+        hashed_password = bcrypt.hashpw(user.motdepasse.encode(), bcrypt.gensalt())
 
         result = create_account(
             user.nom,
@@ -79,7 +78,9 @@ async def login(request: Request):
     username = data.get("username")
     password = data.get("password")
     user_id = login_db(username)  # Récupère l'ID et le mdp crypté
-    if pwd_context.verify(password, user_id[1]):
+    if user_id == None:
+        return {"success": False, "message": "Utilisateur inconnu"}
+    elif bcrypt.checkpw(password.encode(), user_id[1]):
         request.session["user_id"] = user_id[0]
         return {"success": True, "message": "Connexion réussie"}
     else:
@@ -89,3 +90,14 @@ async def login(request: Request):
 async def logout(request: Request):
     request.session.clear()
     return {"message": "Déconnexion réussie"}
+
+
+@app.get("/api/me")
+async def get_current_user(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    # Récupère les infos utilisateur selon ton besoin (ici, pseudo)
+    pseudo = get_username(user_id)
+    print(pseudo)
+    return {"user": {"user_id": user_id, "pseudo": pseudo}}
