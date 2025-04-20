@@ -95,8 +95,10 @@ async def logout(request: Request):
 @app.get("/api/me")
 async def get_current_user(request: Request):
     user_id = request.session.get("user_id")
-    if not user_id:
+    if user_id == None:
+        print("test1")
         raise HTTPException(status_code=401, detail="Non authentifié")
+    print("test2")
     # Récupère les infos utilisateur selon ton besoin (ici, pseudo)
     pseudo = get_username(user_id)
     print(pseudo)

@@ -3,6 +3,7 @@ import styles from "./styles/game.module.css";
 import beerMug from "./img/beermug.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "./authProvider.jsx";
 
 
 // Import images pour la roulette
@@ -11,7 +12,7 @@ import beer2 from "./img/beer2.png";
 import beer3 from "./img/beer3.png";
 import beer4 from "./img/beer4.png";
 import beer5 from "./img/beer5.png";
-
+/*
 function Products() {
   const [products, setProducts] = useState([]);
 
@@ -24,16 +25,26 @@ function Products() {
       .catch(error => console.error("Erreur lors de la récupération des produits:", error));
   }, []); // [] signifie qu'on exécute cet effet une seule fois au montage du composant
 };
-
+*/
 const images = [beer1, beer2, beer3, beer4, beer5];
 
 const GamePage = () => {
   const navigate = useNavigate();
-
+  const { user, loading } = useAuth();
   const [slots, setSlots] = useState([beer1, beer2, beer3]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [forceResult, setForceResult] = useState(null);
   const [message, setMessage] = useState(""); // État pour afficher le message de victoire
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Chargement...</div>; // Optionnel : spinner ou écran vide
+  }
 
   const spinSlots = () => {
     setIsSpinning(true);

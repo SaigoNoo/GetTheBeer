@@ -3,28 +3,32 @@ import { useNavigate } from "react-router-dom";
 import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
 import axios from "axios";
+import { useAuth } from "./authProvider.jsx";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [info, setInfo] = useState("");
-  const navigate = useNavigate(); // Pour naviguer après connexion
+  const navigate = useNavigate();
+  const { user, loading, login } = useAuth();
 
-  const login = async (event) => {
-    {
+  // Redirige automatiquement si l'utilisateur est connecté
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/home");
+    }
+  }, [user, loading, navigate]);
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const response = await tryLogin(username, password);
+    const response = await login(username, password);
     if (response.success) {
       setInfo(<p style={{ color: "green" }}>{response.message}</p>);
-      setTimeout(() => {
-        navigate("/home"); // Redirection après succès
-      }, 1000);
-    } else {
+    }
+    else {
       setInfo(<p style={{ color: "red" }}>{response.message}</p>);
     }
-    }
-    //navigate("/home")
   };
 
   const [data, setData] = useState(null);
@@ -35,17 +39,6 @@ const LoginPage = () => {
       .then(response => setData(response.data.message))
       .catch(error => console.error("Error:", error));
   }, []);
-  
-
-  const tryLogin = async (username, password) => {
-    const response = await fetch("http://localhost:8000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include", // <-- clé pour la session !
-      body: JSON.stringify({ username, password }),
-    });
-    return await response.json();
-  };
 
   return (
     <div className={styles["login-container"]}>
@@ -54,7 +47,7 @@ const LoginPage = () => {
         <div>
           <h5>FastAPI : {data}</h5>
         </div>
-        <form className={styles.form} onSubmit={login}>
+        <form className={styles.form} onSubmit={handleLogin}>
           <label className={styles.form_label} htmlFor="username">Username: </label>
           <input className={styles.form_input} id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <label className={styles.form_label} htmlFor="password">Password: </label>

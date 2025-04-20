@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import beermug from "./img/beermug.png"
 import styles from "./styles/signup.module.css";
+import {useAuth} from "./authProvider.jsx";
 
 
 const SignupPage = () => {
@@ -17,6 +18,14 @@ const SignupPage = () => {
 
     const [info, setInfo] = useState("");
     const navigate = useNavigate();
+    const { user, loading, login } = useAuth();
+
+    // Redirige automatiquement si l'utilisateur est connecté
+    useEffect(() => {
+    if (!loading && user) {
+      navigate("/home");
+    }
+    }, [user, loading, navigate]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -43,7 +52,7 @@ const SignupPage = () => {
 
             if (response.ok) {
                 setInfo(data.message);
-                setTimeout(() => navigate(`/home?id=${data.userId}`), 1000);
+                await login(formData.pseudo, formData.motdepasse);
             } else {
                 // Traduire l'erreur technique en message utilisateur
                 setInfo(formatErrorMessage(data.detail));

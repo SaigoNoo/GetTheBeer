@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import beerMug from "./img/beermug.png";
 import styles from "./styles/acceuil.module.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./authProvider.jsx";
+
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Chargement...</div>; // Optionnel : spinner ou écran vide
+  }
   return (
       <div className={styles["home-page"]}>
         {/* Header */}
