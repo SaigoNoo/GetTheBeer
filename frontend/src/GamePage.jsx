@@ -17,7 +17,7 @@ const images = [beer1, beer2, beer3, beer4, beer5];
 
 const GamePage = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, setUser } = useAuth();
 
   const [slots, setSlots] = useState([beer1, beer2, beer3]);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -60,10 +60,6 @@ const GamePage = () => {
       setMessage("Veuillez sélectionner un adversaire");
       return;
     }
-    
-    console.log("Vous avez ", user.reserve_biere, " bières en réserve");
-    console.log("Adversaire a ", opponent.reserve_biere, " bières en réserve");
-    console.log("Mise: ", betAmount, " bières");
 
     if (user.reserve_biere < betAmount) {
       setMessage("Vous n'avez pas assez de bières en réserve");
@@ -126,10 +122,15 @@ const GamePage = () => {
         }
 
         const data = await response.json();
-        console.log(data.message);
 
-        // Update the user's beer reserve
-        user.reserve_biere += betAmount;
+        // Update the opponent's beer reserve
+        setOpponents((prevOpponents) =>
+          prevOpponents.map((o) =>
+            o.id === opponent.id
+              ? { ...o, reserve_biere: o.reserve_biere - betAmount }
+              : o
+          )
+        );
       } catch (error) {
         console.error("Erreur lors de la transaction:", error);
       }
@@ -154,10 +155,12 @@ const GamePage = () => {
         }
 
         const data = await response.json();
-        console.log(data.message);
 
         // Update the user's beer reserve
-        user.reserve_biere -= betAmount;
+        setUser((prevUser) => ({
+          ...prevUser,
+          reserve_biere: prevUser.reserve_biere - betAmount,
+        }));
       } catch (error) {
         console.error("Erreur lors de la transaction:", error);
       }

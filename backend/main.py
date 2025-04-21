@@ -45,14 +45,6 @@ app.add_middleware(
     allow_headers=["*"]  # Accepter tous les headers
 )
 
-# Base.metadata.create_all(bind=engine)
-
-@app.get("/api/test")
-def read_root():
-    #print(recup())
-    return {"message": "Hello World"}
-
-
 
 # Nouvel endpoint pour l'inscription
 @app.post("/api/signup")
