@@ -5,6 +5,12 @@ import beerMug from "./img/beermug.png";
 import axios from "axios";
 import { useAuth } from "./authProvider.jsx";
 
+axios.get("http://localhost:8000/api/test", {
+  withCredentials: true
+})
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

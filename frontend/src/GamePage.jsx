@@ -12,44 +12,74 @@ import beer2 from "./img/beer2.png";
 import beer3 from "./img/beer3.png";
 import beer4 from "./img/beer4.png";
 import beer5 from "./img/beer5.png";
-/*
-function Products() {
-  const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    // Effectuer la requête GET vers FastAPI pour récupérer les produits
-    axios.get("http://127.0.0.1:8000/products")
-      .then(response => {
-        setProducts(response.data.products); // Mise à jour du state avec les produits reçus
-      })
-      .catch(error => console.error("Erreur lors de la récupération des produits:", error));
-  }, []); // [] signifie qu'on exécute cet effet une seule fois au montage du composant
-};
-*/
 const images = [beer1, beer2, beer3, beer4, beer5];
 
 const GamePage = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+
   const [slots, setSlots] = useState([beer1, beer2, beer3]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [forceResult, setForceResult] = useState(null);
   const [message, setMessage] = useState(""); // État pour afficher le message de victoire
 
+  const [opponents, setOpponents] = useState([]);
+  const [selectedOpponent, setSelectedOpponent] = useState(null);
+  const [betAmount, setBetAmount] = useState(1);
+  
   useEffect(() => {
     if (!loading && !user) {
       navigate("/");
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
-    return <div>Chargement...</div>; // Optionnel : spinner ou écran vide
-  }
+  useEffect(() => { 
+    fetch("http://localhost:8000/api/users/game", {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    })
+      .then(res => {        
+        if (!res.ok) {
+          throw new Error(`Erreur HTTP: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {setOpponents(data);})
+      .catch(err => {
+        console.error("[ERROR] Dans la chaine fetch:", err); // Erreur
+      })
+  }, []);
+  
 
-  const spinSlots = () => {
-    setIsSpinning(true);
+  const spinSlots =  async (opponent, betAmount) => {
+    
     setMessage(""); // Réinitialiser le message à chaque tour
 
+    // Vérifications avant de commencer
+    if (!opponent) {
+      setMessage("Veuillez sélectionner un adversaire");
+      return;
+    }
+  
+    if (opponent.reserve_biere < betAmount) {
+      setMessage("Vous n'avez pas assez de bières en réserve");
+      return;
+    }
+
+    
+  
+    console.log(opponent.reserve_biere);
+    console.log("mise", betAmount);
+
+    if (opponent.reserve_biere < betAmount) {
+      setMessage("L'adversaire n'a pas assez de bières en réserve");
+      return;
+    }
+
+
+    setIsSpinning(true);
+    setMessage("");
 
     let interval = setInterval(() => {
       setSlots([
@@ -105,9 +135,39 @@ const GamePage = () => {
                   <img key={index} src={slot} className={isSpinning ? styles.spinning : ""} alt="slot" />
               ))}
             </div>
+              
+            <h2>Jouer contre :</h2>
+            <select 
+              value={selectedOpponent?.id || ""}
+              onChange={e => setSelectedOpponent(
+                opponents.find(u => u.id == e.target.value))
+              }
+            >
+              <option value="">Choisir un adversaire</option>
+              {opponents.map(opponent => (
+                <option key={opponent.id} value={opponent.id}>
+                  {opponent.pseudo} ({opponent.reserve_biere} bières)
+                </option>
+              ))}
+            </select>
 
-            <button className={styles.button} onClick={spinSlots} disabled={isSpinning}>Lancer la roulette skibidi</button>
-
+            <div>
+              <label>Mise :</label>
+              <input 
+                type="number" 
+                min="1" 
+                value={betAmount}
+                onChange={e => setBetAmount(parseInt(e.target.value) || 1)}
+              />
+            </div>
+            
+            <button 
+              className={styles.button} 
+              onClick={() => spinSlots(selectedOpponent, betAmount)} 
+              disabled={isSpinning}
+            >
+              Lancer la roulette skibidi
+            </button>
             {/* Option pour truquer le résultat */}
             <button className={styles.button} onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
             <button className={styles.button} onClick={() => setForceResult(null)}>Retour en mode aléatoire</button>

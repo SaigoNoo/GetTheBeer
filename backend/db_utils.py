@@ -34,7 +34,6 @@ def get_username(user_id):
         return None
 
 
-
 def create_account(nom, prenom, pseudo, mail, motdepasse, biographie):
     try:
         # Requête SQL préparée
@@ -51,10 +50,27 @@ def create_account(nom, prenom, pseudo, mail, motdepasse, biographie):
         conn.rollback()  # Annuler la transaction en cas d'erreur
         return str(e)
 
+
 def login_db(username):
     try:
         query = "SELECT user_ID, motdepasse FROM utilisateurs WHERE pseudo = ?"
         cur.execute(query, (username,))
         return cur.fetchone()
     except Exception as e:
-        print ("Erreur : ", e)
+        print("Erreur : ", e)
+
+
+def get_opponent(user_id):
+    try:
+        query = """
+            SELECT user_ID as id, pseudo, reserve_biere 
+            FROM utilisateurs
+            WHERE user_ID != ?
+        """
+        cur.execute(query, (user_id,))
+        # Convert the result to a list of dictionaries
+        columns = [column[0] for column in cur.description]
+        return [dict(zip(columns, row)) for row in cur.fetchall()]
+    except Exception as e:
+        print("Erreur : ", e)
+        return []

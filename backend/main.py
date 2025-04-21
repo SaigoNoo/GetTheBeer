@@ -3,7 +3,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from db_utils import recup, create_account, get_username, login_db
+from db_utils import (
+    recup,
+    create_account,
+    get_username,
+    login_db,
+    get_opponent,
+)
 import bcrypt    #Crypter le mot de passe
 
 
@@ -39,7 +45,7 @@ app.add_middleware(
 
 # Base.metadata.create_all(bind=engine)
 
-@app.get("/")
+@app.get("/api/test")
 def read_root():
     #print(recup())
     return {"message": "Hello World"}
@@ -103,3 +109,15 @@ async def get_current_user(request: Request):
     pseudo = get_username(user_id)
     print(pseudo)
     return {"user": {"user_id": user_id, "pseudo": pseudo}}
+
+
+@app.get("/api/users/game")
+async def get_users(request: Request):
+    user_id = request.session.get("user_id")
+    if user_id == None:
+        print("testjage")
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    print("testGame")
+    opponents = get_opponent(user_id)
+    print(opponents)
+    return (opponents)
