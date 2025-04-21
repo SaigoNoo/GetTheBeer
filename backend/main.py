@@ -10,6 +10,7 @@ from db_utils import (
     login_db,
     get_opponent,
     get_user_beer_reserve,
+    do_transaction,
 )
 import bcrypt    #Crypter le mot de passe
 
@@ -121,3 +122,25 @@ async def get_users(request: Request):
     opponents = get_opponent(user_id)
     print(opponents)
     return (opponents)
+
+
+@app.post("/api/game/transaction")
+async def handle_transaction(request: Request):
+    data = await request.json()
+    winner_id = data.get("winner_id")
+    loser_id = data.get("loser_id")
+    beers = data.get("beers")
+
+    print("Received transaction data:", data)  # Debug log
+
+    # Validate input data
+    if not winner_id or not loser_id or not beers:
+        raise HTTPException(status_code=400, detail="Invalid data")
+
+    try:
+        # Call the do_transaction function
+        result = do_transaction(winner_id, loser_id, beers)
+        return result
+    except Exception as e:
+        print("Error in transaction:", e)
+        raise HTTPException(status_code=500, detail="Transaction failed")

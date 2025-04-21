@@ -31,28 +31,20 @@ CREATE TABLE utilisateurs (
 CREATE TABLE amis (
     IDuser1 INT UNSIGNED NOT NULL,
     IDuser2 INT UNSIGNED NOT NULL,
-    biere_du SMALLINT DEFAULT 0,
     PRIMARY KEY (IDuser1, IDuser2),
     FOREIGN KEY (IDuser1) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
     FOREIGN KEY (IDuser2) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
 );
 
 
-CREATE TABLE jeux (
-    Game_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    date DATETIME,
-    gagnant_ID INT UNSIGNED NOT NULL,
-    bieres_en_jeu INT,
-    FOREIGN KEY (gagnant_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
-);
-
-
-CREATE TABLE duel (
-    user_ID INT UNSIGNED NOT NULL,
-    Game_ID INT UNSIGNED NOT NULL,
-    PRIMARY KEY (user_ID, Game_ID),
-    FOREIGN KEY (user_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Game_ID) REFERENCES jeux(Game_ID) ON DELETE CASCADE
+CREATE TABLE transactions (
+    transaction_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    debtor_ID INT UNSIGNED NOT NULL,         -- The player who owes beers
+    creditor_ID INT UNSIGNED NOT NULL,       -- The player who is owed beers
+    beers_owed INT NOT NULL,                 -- The number of beers owed
+    settled BOOLEAN DEFAULT FALSE,           -- Whether the debt has been settled
+    FOREIGN KEY (debtor_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE,
+    FOREIGN KEY (creditor_ID) REFERENCES utilisateurs(user_ID) ON DELETE CASCADE
 );
 
 
@@ -75,3 +67,5 @@ INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biograph
     -- Roqnoob : "roquet456"
     -- GeoTheGreek : "greece789"
     -- DKwiz : "kwz321"
+
+INSERT INTO transactions (debtor_ID, creditor_ID, beers_owed) VALUES (1, 2, 2);

@@ -86,3 +86,24 @@ def get_opponent(user_id):
     except Exception as e:
         print("Erreur : ", e)
         return []
+
+
+def do_transaction(winner_id, loser_id, beers):
+    try:
+        # Deduct beers from the loser
+        query = "UPDATE utilisateurs SET reserve_biere = reserve_biere - ? WHERE user_ID = ?"
+        cur.execute(query, (beers, loser_id))
+
+        # Record the transaction
+        query = """
+            INSERT INTO transactions (debtor_ID, creditor_ID, beers_owed)
+            VALUES (?, ?, ?)
+        """
+        cur.execute(query, (loser_id, winner_id, beers))
+
+        conn.commit()
+        return {"success": True, "message": "Transaction completed"}
+    except Exception as e:
+        conn.rollback()
+        print("Error during transaction:", e)
+        raise Exception("Transaction failed")

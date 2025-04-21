@@ -50,7 +50,6 @@ const GamePage = () => {
         console.error("[ERROR] Dans la chaine fetch:", err); // Erreur
       })
   }, []);
-  
 
   const spinSlots =  async (opponent, betAmount) => {
     
@@ -93,24 +92,78 @@ const GamePage = () => {
       ]);
     }, 100);
 
-    setTimeout(() => {
-      clearInterval(interval);
-      setIsSpinning(false);
+    setTimeout(async () => {
+    clearInterval(interval);
+    setIsSpinning(false);
 
-      let finalResult = forceResult || [
-        images[Math.floor(Math.random() * images.length)],
-        images[Math.floor(Math.random() * images.length)],
-        images[Math.floor(Math.random() * images.length)]
-      ];
+    let finalResult = forceResult || [
+      images[Math.floor(Math.random() * images.length)],
+      images[Math.floor(Math.random() * images.length)],
+      images[Math.floor(Math.random() * images.length)],
+    ];
 
-      setSlots(finalResult);
+    setSlots(finalResult);
 
-      // Vérifier si toutes les images sont identiques
-      if (finalResult[0] === finalResult[1] && finalResult[1] === finalResult[2]) {
-        setMessage("🎉 Victoire ! 🎉");
+    // Check if the user wins
+    if (finalResult[0] === finalResult[1] && finalResult[1] === finalResult[2]) {
+      setMessage("🎉 Victoire ! 🎉");
+
+      // Call the backend to handle the transaction
+      try {
+        const response = await fetch("http://localhost:8000/api/game/transaction", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            winner_id: user.user_id,
+            loser_id: opponent.id,
+            beers: betAmount,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la transaction");
+        }
+
+        const data = await response.json();
+        console.log(data.message);
+
+        // Update the user's beer reserve
+        user.reserve_biere += betAmount;
+      } catch (error) {
+        console.error("Erreur lors de la transaction:", error);
       }
-    }, 3000); // Arrêt après 3 secondes
-  };
+    } else {
+      setMessage("😢 Défaite ! 😢");
+
+      // Call the backend to handle the transaction
+      try {
+        const response = await fetch("http://localhost:8000/api/game/transaction", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            winner_id: opponent.id,
+            loser_id: user.user_id,
+            beers: betAmount,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la transaction");
+        }
+
+        const data = await response.json();
+        console.log(data.message);
+
+        // Update the user's beer reserve
+        user.reserve_biere -= betAmount;
+      } catch (error) {
+        console.error("Erreur lors de la transaction:", error);
+      }
+    }
+  }, 3000); // Stop spinning after 3 seconds
+};
 
 
   return (
@@ -134,6 +187,7 @@ const GamePage = () => {
         <main>
           <div className={styles["game-container"]}>
             <h1>🎰 C'est la roulette AAAAAA 🎰</h1>
+
             <div className={styles["slot-machine"]}>
               {slots.map((slot, index) => (
                   <img key={index} src={slot} className={isSpinning ? styles.spinning : ""} alt="slot" />
@@ -172,10 +226,14 @@ const GamePage = () => {
             >
               Lancer la roulette skibidi
             </button>
-            {/* Option pour truquer le résultat */}
-            <button className={styles.button} onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
-            <button className={styles.button} onClick={() => setForceResult(null)}>Retour en mode aléatoire</button>
 
+            <p>Votre réserve de bières : {user?.reserve_biere || 0}</p>
+            
+            {/* Option pour truquer le résultat */}
+            <div>
+              <button className={styles.button} onClick={() => setForceResult([beer2, beer2, beer2])}>Truquer (3 bières identiques)</button>
+              <button className={styles.button} onClick={() => setForceResult(null)}>Retour en mode aléatoire</button>
+            </div>
             {message && <h2 className={styles["victory-message"]}>{message}</h2>}
           </div>
         </main>
