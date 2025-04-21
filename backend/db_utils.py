@@ -23,9 +23,21 @@ def recup():
     cur.execute("SELECT * FROM utilisateurs;")
     print(cur.fetchall())
 
+
 def get_username(user_id):
     try:
         query = "SELECT pseudo FROM utilisateurs WHERE user_ID = ?"
+        cur.execute(query, (user_id,))
+        result = cur.fetchone()
+        return result[0] if result else None
+    except Exception as e:
+        print("Erreur : ", e)
+        return None
+
+
+def get_user_beer_reserve(user_id):
+    try:
+        query = "SELECT reserve_biere FROM utilisateurs WHERE user_ID = ?"
         cur.execute(query, (user_id,))
         result = cur.fetchone()
         return result[0] if result else None

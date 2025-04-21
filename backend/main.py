@@ -9,6 +9,7 @@ from db_utils import (
     get_username,
     login_db,
     get_opponent,
+    get_user_beer_reserve,
 )
 import bcrypt    #Crypter le mot de passe
 
@@ -107,17 +108,16 @@ async def get_current_user(request: Request):
     print("test2")
     # Récupère les infos utilisateur selon ton besoin (ici, pseudo)
     pseudo = get_username(user_id)
+    reserve_biere = get_user_beer_reserve(user_id)
     print(pseudo)
-    return {"user": {"user_id": user_id, "pseudo": pseudo}}
+    return {"user": {"user_id": user_id, "pseudo": pseudo, "reserve_biere": reserve_biere}}
 
 
 @app.get("/api/users/game")
 async def get_users(request: Request):
     user_id = request.session.get("user_id")
     if user_id == None:
-        print("testjage")
         raise HTTPException(status_code=401, detail="Non authentifié")
-    print("testGame")
     opponents = get_opponent(user_id)
     print(opponents)
     return (opponents)

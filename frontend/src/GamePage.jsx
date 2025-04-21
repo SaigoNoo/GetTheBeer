@@ -61,16 +61,20 @@ const GamePage = () => {
       setMessage("Veuillez sélectionner un adversaire");
       return;
     }
-  
-    if (opponent.reserve_biere < betAmount) {
+    
+    console.log("Vous avez ", user.reserve_biere, " bières en réserve");
+    console.log("Adversaire a ", opponent.reserve_biere, " bières en réserve");
+    console.log("Mise: ", betAmount, " bières");
+
+    if (user.reserve_biere < betAmount) {
       setMessage("Vous n'avez pas assez de bières en réserve");
       return;
     }
 
-    
-  
-    console.log(opponent.reserve_biere);
-    console.log("mise", betAmount);
+    if (opponent.reserve_biere < betAmount) {
+      setMessage("Votre adversaire n'a pas assez de bières en réserve");
+      return;
+    }
 
     if (opponent.reserve_biere < betAmount) {
       setMessage("L'adversaire n'a pas assez de bières en réserve");
