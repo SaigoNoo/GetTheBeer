@@ -3,8 +3,7 @@ DELIMITER $$
 -- Fonction pour récupérer tous les utilisateurs
 DROP FUNCTION IF EXISTS get_all_users$$
 
-CREATE FUNCTION get_all_users()
-    RETURNS LONGTEXT
+CREATE FUNCTION `get_all_users`() RETURNS longtext
     DETERMINISTIC
 BEGIN
     DECLARE result LONGTEXT;
@@ -17,8 +16,7 @@ BEGIN
                            'pseudo', pseudo,
                            'mail', mail,
                            'image', image,
-                           'biographie', biographie,
-                           'titre', titre
+                           'biographie', biographie
                        )
                )
     INTO result
@@ -50,19 +48,13 @@ END$$
 -- Procédure pour ajouter un utilisateur
 DROP PROCEDURE IF EXISTS add_user$$
 
-CREATE PROCEDURE add_user(
-    IN p_nom VARCHAR(100),
-    IN p_prenom VARCHAR(100),
-    IN p_pseudo VARCHAR(100),
-    IN p_mail VARCHAR(255),
-    IN p_image VARCHAR(255),
-    IN p_motdepasse VARCHAR(255),
-    IN p_biographie TEXT,
-    IN p_titre VARCHAR(100)
-)
+CREATE PROCEDURE `add_user`(IN `name` VARCHAR(100), IN `first_name` VARCHAR(100),
+                            IN `username` VARCHAR(100), IN `email` VARCHAR(255),
+                            IN `picture` VARCHAR(255), IN `hashed_password` VARCHAR(255),
+                            IN `bio` TEXT)
 BEGIN
-    INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biographie, titre)
-    VALUES (p_nom, p_prenom, p_pseudo, p_mail, p_image, p_motdepasse, p_biographie, p_titre);
+    INSERT INTO utilisateurs (nom, prenom, pseudo, mail, image, motdepasse, biographie)
+    VALUES (name, first_name, username, email, picture, hashed_password, bio);
 END$$
 
 -- Procédure pour mettre à jour un mot de passe via un token
@@ -133,35 +125,22 @@ CREATE EVENT delete_old_tokens
 -- Créer une fonction de check si un user est ami
 DROP FUNCTION IF EXISTS is_friend$$
 
-CREATE FUNCTION is_friend(user_id1 INT, user_id2 INT)
-    RETURNS BOOLEAN
+CREATE FUNCTION `is_friend`(`user_id1` INT, `user_id2` INT) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-    DECLARE friend_count INT;
-
-    SELECT COUNT(*)
-    INTO friend_count
-    FROM amis
-    WHERE (userid1 = user_id1 AND userid2 = user_id2)
-       OR (userid1 = user_id2 AND userid2 = user_id1);
-
-    RETURN friend_count > 0;
+    RETURN EXISTS (SELECT 1
+                   FROM amis
+                   WHERE (userid1 = user_id1 AND userid2 = user_id2)
+                      OR (userid1 = user_id2 AND userid2 = user_id1));
 END$$
 
 -- Ajout d'une amitié
 DROP PROCEDURE IF EXISTS add_friend$$
 
-CREATE PROCEDURE add_friend(
-    IN user_id1 INT,
-    IN user_id2 INT
-)
+CREATE PROCEDURE `add_friend`(IN `user_id1` INT, IN `user_id2` INT)
 BEGIN
-    DECLARE already_friends BOOLEAN;
-
-    SET already_friends = is_friend(user_id1, user_id2);
-
-    IF NOT already_friends THEN
-        INSERT INTO amis (userid1, userid2)
+    IF NOT is_friend(user_id1, user_id2) THEN
+        INSERT INTO amis (IDuser1, IDuser2)
         VALUES (user_id1, user_id2);
     END IF;
 END$$
@@ -169,14 +148,14 @@ END$$
 -- Suppression d'une amitié
 DROP PROCEDURE IF EXISTS delete_friend$$
 
-CREATE PROCEDURE delete_friend(
-    IN user_id1 INT,
-    IN user_id2 INT
-)
+CREATE PROCEDURE `delete_friend`(IN `user_id1` INT, IN `user_id2` INT)
 BEGIN
-    DELETE FROM amis
-    WHERE (userid1 = user_id1 AND userid2 = user_id2)
-       OR (userid1 = user_id2 AND userid2 = user_id1);
+    IF is_friend(user_id1, user_id2) THEN
+        DELETE
+        FROM amis
+        WHERE (IDuser1 = user_id1 AND IDuser2 = user_id2)
+           OR (IDuser1 = user_id2 AND IDuser2 = user_id1);
+    END IF;
 END$$
 
 
@@ -184,8 +163,8 @@ END$$
 DROP FUNCTION IF EXISTS get_user_beers$$
 
 CREATE FUNCTION get_user_beers(user_id INT)
-RETURNS INT
-DETERMINISTIC
+    RETURNS INT
+    DETERMINISTIC
 BEGIN
     DECLARE total_beers INT;
 
@@ -202,8 +181,8 @@ END$$
 DROP FUNCTION IF EXISTS get_user_title$$
 
 CREATE FUNCTION get_user_title(user_id INT)
-RETURNS VARCHAR(255)
-DETERMINISTIC
+    RETURNS VARCHAR(255)
+    DETERMINISTIC
 BEGIN
     DECLARE user_title VARCHAR(255);
 
