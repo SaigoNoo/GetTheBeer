@@ -64,5 +64,13 @@ class Database:
     def call_procedure(self, name: str, **parameters):
         if len(parameters) > 0:
             parameters = list(parameters.values())
-        self.cursor.callproc(name, parameters)
-        self.socket.commit()
+        try:
+            self.cursor.callproc(name, parameters)
+            self.socket.commit()
+        except Exception as e:
+            self.socket.rollback()
+            return {
+                "code": "SQL_ERROR",
+                "message": "L'opération a été annulée !",
+                "error": e
+            }

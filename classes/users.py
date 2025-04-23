@@ -5,21 +5,33 @@ from fastapi import HTTPException
 
 from api.models import CreateUser
 from classes.database import Database
+from classes.debug import Debug
 from classes.mail import Mail, OpenMailHTML
 
 
 class UsersAPI:
-    def __init__(self, db: Database):
+    def __init__(self, db: Database, debug: Debug):
         self.db = db
+        self.debug = debug
+        print(self.do_transaction(winner_id=5, loser_id=6, beers=3))
 
-    @staticmethod
-    def generate_token():
+    def generate_token(self):
+        self.debug.print(app_module="UserAPI", text="Génération du token...")
         return uuid4()
 
     def get_user_infos(self, user_id: int) -> dict or None:
+        self.debug.print(app_module="UserAPI", text=f"Obtention des infos sur l'utilisateur avec l'id: {user_id}")
         for line in self.db.call_function(name="get_all_users", to_json=True):
             if line["user_ID"] == user_id:
+                self.debug.print(
+                    app_module="UserAPI",
+                    text="Infos trouvées !"
+                )
                 return line
+        self.debug.print(
+            app_module="UserAPI",
+            text="Aucune info trouvée !"
+        )
         return None
 
     def user_exist(self, username: str):
@@ -163,3 +175,48 @@ class UsersAPI:
                 raise HTTPException(status_code=405, detail=f"{friend_id} n'est pas dans votre liste d'amis !")
         else:
             raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
+
+    def get_opponent(self, user_id: int):
+        response = []
+        for user in self.list_members():
+            response.append(user) if user["user_ID"] != user_id else None
+        return response
+
+    def do_transaction(self, winner_id, loser_id, beers):
+        self.debug.print(app_module="UserTransaction", text="Calcul des changements de bieres...")
+        beers_left_looser = self.db.call_function(
+            name="how_many_beer",
+            uid=loser_id
+        ) - beers
+
+        beers_left_winner = self.db.call_function(
+            name="how_many_beer",
+            uid=winner_id
+        ) + beers
+
+        self.debug.print(app_module="UserTransaction", text="Modifications des bieres dans la DB...")
+
+        self.db.call_procedure(
+            name="do_beer_transaction",
+            uid=loser_id,
+            beer=beers_left_looser
+        )
+
+        self.db.call_procedure(
+            name="do_beer_transaction",
+            uid=winner_id,
+            beer=beers_left_winner
+        )
+
+        # Record the transaction
+        self.db.call_procedure(
+            name="add_transaction",
+            looser_uid=loser_id,
+            winner_uid=winner_id,
+            beers_owed=beers
+        )
+
+        return {
+            "success": True,
+            "message": "Transaction completed"
+        }

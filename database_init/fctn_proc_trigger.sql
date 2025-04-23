@@ -1,6 +1,9 @@
 DELIMITER $$
 
--- Fonction pour récupérer tous les utilisateurs
+--
+-- OBTENIR LES USERS
+--
+
 DROP FUNCTION IF EXISTS get_all_users$$
 
 CREATE FUNCTION `get_all_users`() RETURNS longtext
@@ -25,7 +28,10 @@ BEGIN
     RETURN result;
 END$$
 
--- Fonction pour récupérer le mot de passe
+--
+-- RECUP LE MOT DE PASSE HASHE
+--
+
 DROP FUNCTION IF EXISTS get_user_password$$
 
 CREATE FUNCTION get_user_password(username VARCHAR(100))
@@ -45,7 +51,9 @@ BEGIN
     RETURN user_pwd;
 END$$
 
--- Procédure pour ajouter un utilisateur
+--
+-- AJOUTER UN USER DANS LA DB
+--
 DROP PROCEDURE IF EXISTS add_user$$
 
 CREATE PROCEDURE `add_user`(IN `name` VARCHAR(100), IN `first_name` VARCHAR(100),
@@ -57,7 +65,9 @@ BEGIN
     VALUES (name, first_name, username, email, picture, hashed_password, bio);
 END$$
 
--- Procédure pour mettre à jour un mot de passe via un token
+--
+-- RESET LE MOT DE PASSE SI LE TOKEN EST LE BON
+--
 DROP PROCEDURE IF EXISTS update_password_by_token$$
 
 CREATE PROCEDURE update_password_by_token(
@@ -80,7 +90,9 @@ BEGIN
     END IF;
 END$$
 
--- Procédure pour ajouter un token
+--
+-- AJOUTER UNE INSTANCE DE RESET VIA TOKEN
+--
 DROP PROCEDURE IF EXISTS token_reset$$
 
 CREATE PROCEDURE token_reset(
@@ -92,7 +104,9 @@ BEGIN
     VALUES (p_user, p_token, CURRENT_TIMESTAMP);
 END$$
 
--- Fonction pour vérifier si un token existe
+--
+-- MON RESET EST TOUJOURS SOUS TOKEN ?
+--
 DROP FUNCTION IF EXISTS have_reset_token$$
 
 CREATE FUNCTION have_reset_token(uid INT)
@@ -109,6 +123,9 @@ BEGIN
     RETURN result;
 END$$
 
+--
+-- IMPORTANT
+--
 -- Activer le scheduler si ce n'est pas déjà fait
 -- Événement : suppression des tokens vieux de plus de 15 minutes
 DROP EVENT IF EXISTS delete_old_tokens$$
@@ -122,7 +139,9 @@ CREATE EVENT delete_old_tokens
     FROM token_table
     WHERE created_at < NOW() - INTERVAL 15 MINUTE$$
 
--- Créer une fonction de check si un user est ami
+--
+-- SONT ILS AMIS ?
+--
 DROP FUNCTION IF EXISTS is_friend$$
 
 CREATE FUNCTION `is_friend`(`user_id1` INT, `user_id2` INT) RETURNS tinyint(1)
@@ -134,7 +153,9 @@ BEGIN
                       OR (userid1 = user_id2 AND userid2 = user_id1));
 END$$
 
--- Ajout d'une amitié
+--
+-- CREER UNE RELATION AMI
+--
 DROP PROCEDURE IF EXISTS add_friend$$
 
 CREATE PROCEDURE `add_friend`(IN `user_id1` INT, IN `user_id2` INT)
@@ -145,7 +166,9 @@ BEGIN
     END IF;
 END$$
 
--- Suppression d'une amitié
+--
+-- SUPPRIMER UNE RELATION AMIS
+--
 DROP PROCEDURE IF EXISTS delete_friend$$
 
 CREATE PROCEDURE `delete_friend`(IN `user_id1` INT, IN `user_id2` INT)
@@ -158,6 +181,67 @@ BEGIN
     END IF;
 END$$
 
+--
+-- VOIR LES BIERES DUES
+--
+DROP FUNCTION IF EXISTS get_user_beer_reserve$$
+
+CREATE FUNCTION get_user_beer_reserve(uid INT)
+    RETURNS INT
+    NOT DETERMINISTIC
+    READS SQL DATA
+BEGIN
+    DECLARE result INT;
+
+    SELECT reserve_biere
+    INTO result
+    FROM utilisateurs
+    WHERE user_ID = uid;
+
+    RETURN result;
+END$$
+
+--
+-- MODIFIER LA QTE DE BIERES D'UN USER
+--
+
+DROP PROCEDURE IF EXISTS do_beer_transaction$$
+
+CREATE PROCEDURE do_beer_transaction(IN uid INT, IN beer INT)
+BEGIN
+    UPDATE utilisateurs
+    SET reserve_biere = reserve_biere - beer
+    WHERE user_ID = uid;
+END$$
+
+--
+-- VOIR LES BEERS D'UN UTILISATEUR
+--
+
+DROP FUNCTION IF EXISTS how_many_beer$$
+
+CREATE FUNCTION how_many_beer(uid INT)
+    RETURNS INT
+    DETERMINISTIC
+    READS SQL DATA
+BEGIN
+    DECLARE beers INT;
+    SELECT reserve_biere INTO beers FROM utilisateurs WHERE user_ID = uid;
+    RETURN beers;
+END$$
+--
+DROP PROCEDURE IF EXISTS add_transaction$$
+
+
+CREATE PROCEDURE add_transaction(
+    IN looser_uid INT,
+    IN winner_uid INT,
+    IN beers_owed INT
+)
+BEGIN
+    INSERT INTO transactions(debtor_ID, creditor_ID, beers_owed)
+    VALUES (looser_uid, winner_uid, beers_owed);
+END$$
 
 -- Fonction pour récupérer le total de bières gagnées par un utilisateur
 DROP FUNCTION IF EXISTS get_user_beers$$
