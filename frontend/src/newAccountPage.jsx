@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import beermug from "./img/beermug.png"
 import styles from "./styles/signup.module.css";
-import {useAuth} from "./authProvider.jsx";
+import { useAuth } from "./context/UserContext.jsx";
 
 
 const SignupPage = () => {

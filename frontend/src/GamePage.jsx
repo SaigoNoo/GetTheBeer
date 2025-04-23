@@ -3,7 +3,8 @@ import styles from "./styles/game.module.css";
 import beerMug from "./img/beermug.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "./authProvider.jsx";
+import { useAuth } from "./context/UserContext.jsx";
+
 
 
 // Import images pour la roulette

@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
 import axios from "axios";
-import { useAuth } from "./authProvider.jsx";
-
-axios.get("http://localhost:8000/api/test", {
-  withCredentials: true
-})
-  .then(response => console.log(response.data))
-  .catch(error => console.error(error));
+import { useAuth } from "./context/UserContext.jsx";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -19,55 +13,88 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { user, loading, login } = useAuth();
 
-  // Redirige automatiquement si l'utilisateur est connecté
   useEffect(() => {
     if (!loading && user) {
-      navigate("/home");
+      console.log("Utilisateur connecté :", user.pseudo);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const response = await login(username, password);
-    if (response.success) {
-      setInfo(<p style={{ color: "green" }}>{response.message}</p>);
-    }
-    else {
-      setInfo(<p style={{ color: "red" }}>{response.message}</p>);
+    try {
+      const response = await login(username, password);
+      if (response.success) {
+        setInfo(<p style={{ color: "green" }}>{response.message}</p>);
+        setTimeout(() => {
+          navigate("/home");
+        }, 1000);
+      } else {
+        setInfo(<p style={{ color: "red" }}>{response.message}</p>);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error);
+      setInfo(<p style={{ color: "red" }}>Une erreur est survenue</p>);
     }
   };
 
   const [data, setData] = useState(null);
-
   useEffect(() => {
-    // Appel à l'API FastAPI avec axios
-    axios.get("http://localhost:8000/")
-      .then(response => setData(response.data.message))
-      .catch(error => console.error("Error:", error));
+    axios
+      .get("http://localhost:8000/api/test")
+      .then((response) => setData(response.data.message))
+      .catch((error) => {
+        console.error("Erreur de connexion au backend :", error);
+        setData("Erreur de connexion au backend ❌");
+      });
   }, []);
 
   return (
     <div className={styles["login-container"]}>
       <div className={styles.content}>
-        <h1>connexion</h1>
-        <div>
-          <h5>FastAPI : {data}</h5>
-        </div>
+        <h1>Connexion</h1>
+        {data && <h5 style={{ color: "gray" }}>Backend : {data}</h5>}
+
         <form className={styles.form} onSubmit={handleLogin}>
-          <label className={styles.form_label} htmlFor="username">Username: </label>
-          <input className={styles.form_input} id="username" type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <label className={styles.form_label} htmlFor="password">Password: </label>
-          <input className={styles.form_input} id="password" type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <label className={styles.form_label} htmlFor="username">Username:</label>
+          <input
+            className={styles.form_input}
+            id="username"
+            type="text"
+            placeholder="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <label className={styles.form_label} htmlFor="password">Password:</label>
+          <input
+            className={styles.form_input}
+            id="password"
+            type="password"
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
           <br />
-          <input className={styles.form_checkbox} id="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <input
+            className={styles.form_checkbox}
+            id="remember"
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+          />
           <label className={styles.form_label} htmlFor="remember">Retenir ma connexion</label>
           <br />
+
           <input className={styles.form_submit} type="submit" value="Se connecter" />
         </form>
+
         {info && <div id="info">{info}</div>}
+
         <a href="#" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
         <a href="/signUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
       </div>
+
       <div className={styles["bottom-left"]}>
         <img src={beerMug} alt="Icône bière" />
         <div className={styles["bottom-left-text"]}>

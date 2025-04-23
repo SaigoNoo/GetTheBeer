@@ -1,8 +1,7 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
-import App from './App.jsx'
-import AuthProvider from './authProvider.jsx'
+import App from './App.jsx';
 import axios from "axios";
 
 // Intercepteur Axios
@@ -17,11 +16,9 @@ axios.interceptors.response.use(
 );
 
 createRoot(document.getElementById('root')).render(
-    <React.Fragment>
-        <BrowserRouter>
-            <AuthProvider>
-                <App />
-            </AuthProvider>
-        </BrowserRouter>
-    </React.Fragment>
-)
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);

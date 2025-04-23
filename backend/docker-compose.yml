@@ -15,6 +15,17 @@ services:
     networks:
       - mynetwork
 
+  backend:
+    build: .
+    container_name: backend_container
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mariadb
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
     driver: bridge
