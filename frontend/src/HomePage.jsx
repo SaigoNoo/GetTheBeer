@@ -6,7 +6,7 @@ import { useAuth } from "./authProvider.jsx";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -30,7 +30,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className={styles["right-content"]}>
-              <button className={styles["account-btn"]}>Mon compte</button>
+              <button className={styles["account-btn"]} onClick={() => logout()}>Mon compte</button>
               <button className={styles["play-btn"]} onClick={() => navigate("/game")}>Jouer</button>
             </div>
           </div>
