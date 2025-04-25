@@ -32,7 +32,7 @@ const ProfilePage = () => {
   return (
     <div className={styles.pageWrapper}>
 
-      {/* Header identique à Home */}
+
       <header className={styles.header}>
         <div className={styles["header-left"]}>
           <img src={beerMug} alt="Logo" className={styles.logo} />
@@ -47,7 +47,7 @@ const ProfilePage = () => {
         </div>
       </header>
 
-      {/* Partie Profil */}
+
       <main className={styles.mainContent}>
         <div className={styles.profileCard}>
           <div className={styles.profileImage}></div>
@@ -65,7 +65,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Boutons en dehors du cadre */}
+
         <div className={styles.actions}>
           <button className={styles.button} onClick={() => navigate("/home")}>Modifier le profil</button>
           <button className={styles.button} onClick={() => navigate("/home")}>Voir la liste d'amis</button>
