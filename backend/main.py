@@ -138,3 +138,12 @@ async def get_profile(request: Request):
     if not user_data:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return user_data
+
+@app.get("/api/friends/{user_id}")
+def get_friends(user_id: int):
+    try:
+        friends = db_utils.get_friends(user_id)
+        return {"friends": friends}
+    except Exception as e:
+        print("Erreur dans /api/friends:", e)
+        return JSONResponse(status_code=500, content={"message": "Erreur lors de la récupération des amis."})

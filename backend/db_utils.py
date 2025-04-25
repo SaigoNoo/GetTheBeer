@@ -139,3 +139,18 @@ def login_user(username, password):
         print("Erreur lors de la tentative de connexion :", e)
         traceback.print_exc()
         return None
+
+def get_friends(user_id):
+    try:
+        cur = conn.cursor()
+        query = """
+            SELECT u.pseudo FROM utilisateurs u
+            JOIN amis a ON u.user_ID = a.IDuser2
+            WHERE a.IDuser1 = %s
+        """
+        cur.execute(query, (user_id,))
+        friends = [row[0] for row in cur.fetchall()]
+        return friends
+    except Exception as e:
+        print("Erreur get_friends:", e)
+        return []

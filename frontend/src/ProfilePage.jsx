@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./styles/profile.module.css";
+import beerMug from "./img/beermug.png";
 import { useAuth } from "./context/UserContext";
-import styles from "./styles/profil.module.css";
 
 const ProfilePage = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -19,37 +20,57 @@ const ProfilePage = () => {
         setProfile(data);
         console.log("Profil chargé :", data);
       } catch (err) {
-        console.error(err);
+        console.error("Erreur chargement profil :", err);
       }
-      
     };
 
     fetchProfile();
   }, []);
 
-  if (!profile) return <p>Chargement...</p>;
+  if (!profile) return <div className={styles.loading}>Chargement du profil...</div>;
 
   return (
-    <div className={styles["profile-page"]}>
-      <div className={styles["profile-container"]}>
-        <h1>{profile.pseudo}</h1>
-        <p><strong>Nom :</strong> {profile.nom}</p>
-        <p><strong>Prénom :</strong> {profile.prenom}</p>
-        <p><strong>Email :</strong> {profile.mail}</p>
+    <div className={styles.pageWrapper}>
 
-        <h2>Statistiques</h2>
-        <p>À venir...</p>
+      {/* Header identique à Home */}
+      <header className={styles.header}>
+        <div className={styles["header-left"]}>
+          <img src={beerMug} alt="Logo" className={styles.logo} />
+          <div className={styles.titre}>
+            <h1>Get The Beer</h1>
+            <h2>Le jeu d’hasard des alcoolos</h2>
+          </div>
+        </div>
+        <div className={styles["header-right"]}>
+          <button className={styles.bouton} onClick={() => navigate("/home")}>Accueil</button>
+          <button className={styles.bouton} onClick={() => navigate("/game")}>Jouer</button>
+        </div>
+      </header>
 
-        <h2>Biographie</h2>
-        <p>{profile.biographie}</p>
+      {/* Partie Profil */}
+      <main className={styles.mainContent}>
+        <div className={styles.profileCard}>
+          <div className={styles.profileImage}></div>
 
-        <button className={styles.backBtn} onClick={() => navigate("/home")}>
-          Retour
-        </button>
-        <button className={styles.backBtn} style={{ marginLeft: "10px" }}>
-          Modifier le profil
-        </button>
-      </div>
+          <div className={styles.userInfo}>
+            <p><strong>Nom :</strong> {profile.nom}</p>
+            <p><strong>Prénom :</strong> {profile.prenom}</p>
+            <p><strong>Pseudo :</strong> {profile.pseudo}</p>
+
+            <p className={styles.statistiques}>Statistique future à venir</p>
+            <p className={styles.statistiques}>Statistique future à venir</p>
+
+            <p><strong>Biographie :</strong></p>
+            <p className={styles.bio}>{profile.biographie || "Aucune biographie pour le moment."}</p>
+          </div>
+        </div>
+
+        {/* Boutons en dehors du cadre */}
+        <div className={styles.actions}>
+          <button className={styles.button} onClick={() => navigate("/home")}>Modifier le profil</button>
+          <button className={styles.button} onClick={() => navigate("/home")}>Voir la liste d'amis</button>
+        </div>
+      </main>
     </div>
   );
 };

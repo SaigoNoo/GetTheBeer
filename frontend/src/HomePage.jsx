@@ -1,16 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import beerMug from "./img/beermug.png";
 import styles from "./styles/acceuil.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/UserContext.jsx";
+import axios from "axios";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
+  const [friends, setFriends] = useState([]);
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/");
+    } else if (!loading && user) {
+      axios
+        .get(`http://localhost:8000/api/friends/${user.user_id}`)
+        .then((response) => {
+          setFriends(response.data.friends);
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la récupération des amis :", error);
+        });
     }
   }, [user, loading, navigate]);
 
@@ -42,15 +53,21 @@ const HomePage = () => {
       <main className={styles["main-content"]}>
         <section className={styles.stats}>
           <h3>Mes stats</h3>
-          {/* Contenu des stats */}
         </section>
         <section className={styles.news}>
           <h3>Actualités</h3>
-          {/* Contenu des actualités */}
         </section>
         <section className={styles.friends}>
           <h3>Mes amis</h3>
-          {/* Contenu des amis */}
+          <ul>
+            {friends.length === 0 ? (
+              <li>Aucun ami pour le moment</li>
+            ) : (
+              friends.map((ami, index) => (
+                <li key={index}>{ami.pseudo}</li>
+              ))
+            )}
+          </ul>
         </section>
       </main>
     </div>

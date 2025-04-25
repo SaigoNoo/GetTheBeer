@@ -1,0 +1,126 @@
+/* === BANNIÈRE === */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(180, 123, 0, 0.5);
+  padding: 10px 30px;
+  height: 100px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px;
+  margin-right: 20px;
+}
+
+.titre h1 {
+  font-size: 40px;
+  color: white;
+  margin: 0;
+}
+
+.titre h2 {
+  font-size: 20px;
+  color: white;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bouton {
+  background-color: #b47b00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bouton:hover {
+  background-color: #9c6600;
+}
+
+/* === PAGE === */
+.pageWrapper {
+  background-color: black;
+  min-height: 100vh;
+  color: white;
+}
+
+/* Centre le contenu */
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  gap: 20px;
+}
+
+.profileCard {
+  display: flex;
+  background-color: #2b2b2b;
+  border-radius: 10px;
+  padding: 40px;
+  gap: 40px;
+  align-items: center;
+  max-width: 800px;
+  width: 100%;
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  background-color: #444;
+  border-radius: 50%;
+  border: 3px solid #ffcc00;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statistiques {
+  color: #fcb900;
+  font-weight: bold;
+}
+
+.bio {
+  font-style: italic;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  background-color: #b47b00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #9c6600;
+}
+
+.loading {
+  color: white;
+  text-align: center;
+  margin-top: 50px;
+}
