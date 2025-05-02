@@ -20,7 +20,7 @@ Il faut ensuite faire
 docker exec -it mariadb_container mariadb -umyuser -pmypassword mydatabase
 Ce qui ouvrira un terminal MariaDB qui sert à mettre des instructions SQL.
 
-###FastAPI
+### FastAPI
 Pour lancer le backend, il faut créer le venv :
 
 python -m venv venv
