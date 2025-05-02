@@ -7,6 +7,7 @@ Copier la branche dev
 
 ### ReactJS
 Aller dans le dossier frontend, faire
+
 npm install
 npm run dev
 
@@ -16,10 +17,13 @@ npm run dev
 Aller dans le dossier backend
 
 Il faut après faire
+
 docker-compose up
 
 Il faut ensuite faire
+
 docker exec -it mariadb_container mariadb -umyuser -pmypassword mydatabase
+
 Ce qui ouvrira un terminal MariaDB qui sert à mettre des instructions SQL.
 
 ### FastAPI
