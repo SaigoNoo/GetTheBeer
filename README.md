@@ -13,6 +13,8 @@ npm run dev
 ### MariaDB
 (Si vous travaillez sur Windows, ne pas oubblier de démarrer Docker Desktop)
 
+Aller dans le dossier backend
+
 Il faut après faire
 docker-compose up
 
@@ -21,6 +23,7 @@ docker exec -it mariadb_container mariadb -umyuser -pmypassword mydatabase
 Ce qui ouvrira un terminal MariaDB qui sert à mettre des instructions SQL.
 
 ### FastAPI
+Aller dans le dossier backend
 Pour lancer le backend, il faut créer le venv :
 
 python -m venv venv
