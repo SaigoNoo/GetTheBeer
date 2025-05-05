@@ -140,17 +140,22 @@ def login_user(username, password):
         traceback.print_exc()
         return None
 
+
 def get_friends(user_id):
     try:
-        cur = conn.cursor()
-        query = """
-            SELECT u.pseudo FROM utilisateurs u
-            JOIN amis a ON u.user_ID = a.IDuser2
-            WHERE a.IDuser1 = %s
-        """
-        cur.execute(query, (user_id,))
-        friends = [row[0] for row in cur.fetchall()]
+        cur.execute("""
+            SELECT pseudo FROM utilisateurs 
+            WHERE user_ID IN (
+                SELECT IDuser2 FROM amis WHERE IDuser1 = %s
+                UNION
+                SELECT IDuser1 FROM amis WHERE IDuser2 = %s
+            )
+        """, (user_id, user_id))
+        rows = cur.fetchall()
+        friends = [{"pseudo": row[0]} for row in rows]  # Conversion tuple -> dict
         return friends
     except Exception as e:
-        print("Erreur get_friends:", e)
+        print(f"Erreur lors de la récupération des amis : {e}")
         return []
+
+

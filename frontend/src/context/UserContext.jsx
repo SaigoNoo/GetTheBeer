@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
@@ -6,27 +6,32 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Vérifie si l'utilisateur est connecté
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/api/me", {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("Non connecté");
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/me", {
+        credentials: "include",
+      });
+
+      if (res.status === 401) {
+        // Pas connecté : on ne log plus rien
+        setUser(null);
+      } else if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-      } catch (err) {
-        setUser(null);
-      } finally {
-        setLoading(false);
+      } else {
+        console.error("Erreur inconnue lors de la récupération de l'utilisateur");
       }
-    };
+    } catch (err) {
+      console.error("Erreur réseau :", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUser();
   }, []);
 
-  // Fonction de login
   const login = async (username, password) => {
     try {
       const res = await fetch("http://localhost:8000/api/login", {
@@ -39,23 +44,16 @@ export const UserProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        return { success: false, message: data.message || "Connexion échouée" };
+        return { success: false, message: data.message || "Échec de la connexion" };
       }
 
-      const meRes = await fetch("http://localhost:8000/api/me", {
-        credentials: "include",
-      });
-
-      const meData = await meRes.json();
-      setUser(meData.user);
+      await fetchUser();
       return { success: true, message: "Connexion réussie" };
-
     } catch (err) {
       return { success: false, message: "Erreur lors de la connexion" };
     }
   };
 
-  // ✅ Fonction logout
   const logout = async () => {
     try {
       await fetch("http://localhost:8000/api/logout", {
@@ -63,7 +61,7 @@ export const UserProvider = ({ children }) => {
         credentials: "include",
       });
     } catch (err) {
-      console.error("Erreur pendant la déconnexion :", err);
+      console.error("Erreur de déconnexion :", err);
     } finally {
       setUser(null);
     }

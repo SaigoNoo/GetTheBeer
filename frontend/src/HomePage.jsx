@@ -17,7 +17,7 @@ const HomePage = () => {
       axios
         .get(`http://localhost:8000/api/friends/${user.user_id}`)
         .then((response) => {
-          setFriends(response.data.friends);
+          setFriends(response.data);
         })
         .catch((error) => {
           console.error("Erreur lors de la récupération des amis :", error);
@@ -60,9 +60,10 @@ const HomePage = () => {
         <section className={styles.friends}>
           <h3>Mes amis</h3>
           <ul>
-            {friends.length === 0 ? (
+            {Array.isArray(friends) && friends.length === 0 ? (
               <li>Aucun ami pour le moment</li>
             ) : (
+              Array.isArray(friends) &&
               friends.map((ami, index) => (
                 <li key={index}>{ami.pseudo}</li>
               ))

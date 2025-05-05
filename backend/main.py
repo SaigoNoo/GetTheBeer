@@ -14,6 +14,8 @@ from db_utils import (
     get_user_profile
 )
 import bcrypt
+from db_utils import get_friends
+
 
 # Modèle pour l'inscription
 class UserSignup(BaseModel):
@@ -140,10 +142,11 @@ async def get_profile(request: Request):
     return user_data
 
 @app.get("/api/friends/{user_id}")
-def get_friends(user_id: int):
+def get_user_friends(user_id: int):
     try:
-        friends = db_utils.get_friends(user_id)
-        return {"friends": friends}
+        friends = get_friends(user_id)
+        print("Amis récupérés :", friends)  # ➜ Ajout temporaire
+        return friends
     except Exception as e:
-        print("Erreur dans /api/friends:", e)
-        return JSONResponse(status_code=500, content={"message": "Erreur lors de la récupération des amis."})
+        print("Erreur API /api/friends :", e)
+        raise HTTPException(status_code=500, detail=str(e))
