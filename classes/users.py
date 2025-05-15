@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from bcrypt import hashpw, gensalt, checkpw
 from fastapi import HTTPException
+from fastapi import Request
 
 from api.models import CreateUser
 from classes.database import Database
@@ -13,7 +14,6 @@ class UsersAPI:
     def __init__(self, db: Database, debug: Debug):
         self.db = db
         self.debug = debug
-        print(self.do_transaction(winner_id=5, loser_id=6, beers=3))
 
     def generate_token(self):
         self.debug.print(app_module="UserAPI", text="Génération du token...")
@@ -40,6 +40,14 @@ class UsersAPI:
                 return True
         return False
 
+    def uid_exist(self, uid: int):
+        if uid == 0:
+            return False
+        for line in self.db.call_function(name="get_all_users", to_json=True):
+            if line["user_ID"] == uid:
+                return True
+        return False
+
     def get_id(self, username: str):
         for line in self.db.call_function(name="get_all_users", to_json=True):
             if line["pseudo"] == username:
@@ -57,6 +65,16 @@ class UsersAPI:
             if line["mail"] == email:
                 return line["pseudo"]
         return None
+
+    def check_uid(self, uid: int):
+        self.debug.print(app_module="UserCheck", text=f"Vérification que l'ID {uid} existe...")
+        if not self.uid_exist(uid=uid):
+            self.debug.print(
+                app_module="UserCheck",
+                text=f"L'UID {uid} n'existe pas !"
+            )
+            return False
+        return True
 
     def ask_reset(self, username: str):
         if self.user_exist(username=username):
@@ -88,17 +106,34 @@ class UsersAPI:
                 "message": f"{username} n'est pas inscrit dans GetTheBeer!"
             }
 
+    @staticmethod
+    def encrypt_password(data: str):
+        return hashpw(password=data.encode(), salt=gensalt())
+
     def reset_password(self, token: str, new_password: str):
         try:
-            self.db.call_procedure(name="update_password_by_token", p_id=token, new_pass=new_password)
-            return {
-                "code": "RESET_OK",
-                "message": "Le mot de passe a bien été modifié !"
-            }
+            if self.db.call_function(
+                    name="have_reset_token",
+                    uid=self.db.call_function(
+                        name="get_token_owner_id",
+                        token=token
+                    )
+            ):
+                self.db.call_procedure(
+                    name="update_password_by_token",
+                    p_id=token,
+                    new_pass=self.encrypt_password(
+                        data=new_password
+                    ))
+                return {
+                    "code": "RESET_OK",
+                    "message": "Le mot de passe a bien été modifié !"
+                }
         except Exception as e:
             return {
                 "code": "RESET_FAIL",
-                "message": e
+                "message": "Votre TOKEN est certainement invalide",
+                "erreur": e
             }
 
     def create_user(self, data: CreateUser):
@@ -110,7 +145,7 @@ class UsersAPI:
                 pseudo=data.username,
                 mail=data.email,
                 picture=data.image,
-                hashed_password=hashpw(password=data.password.encode(), salt=gensalt()),
+                hashed_password=self.encrypt_password(data=data.password),
                 bio=data.bio
             )
             content = OpenMailHTML().html_raw(file="welcome", name=data.username)
@@ -125,10 +160,11 @@ class UsersAPI:
     def list_members(self):
         return self.db.call_function(name="get_all_users", to_json=True)
 
-    def login_user(self, username: str, password: str):
+    def login_user(self, username: str, password: str, request: Request):
         if self.user_exist(username):
             stored_password = self.db.call_function(name="get_user_password", username=username)
             if checkpw(password=password.encode(), hashed_password=stored_password.encode()):
+                request.session["user_id"] = self.get_id(username=username)
                 return {
                     "success": True,
                     "code": "SUCCESS_LOGIN",
@@ -176,13 +212,27 @@ class UsersAPI:
         else:
             raise HTTPException(status_code=404, detail=f"{friend_id} est soit innexistant soit vide !")
 
+    def list_friends(self, my_id: int):
+        return self.db.call_function(name="get_friends", user_id=my_id)
+
     def get_opponent(self, user_id: int):
         response = []
         for user in self.list_members():
+            data = user
+            data["beers"] = self.db.call_function(
+                name="get_user_beer_reserve",
+                uid=user_id
+            )
             response.append(user) if user["user_ID"] != user_id else None
         return response
 
-    def do_transaction(self, winner_id, loser_id, beers):
+    def do_transaction(self, winner_id: int, loser_id: int, beers: int):
+        self.check_uid(uid=winner_id) and self.check_uid(uid=loser_id)
+        self.debug.print(app_module="UserTransaction",
+                         text="Verification de si le perdant n'est pas en endeté ou si il tombera pas en négatif")
+        if self.db.call_function("has_enough_beer", uid=loser_id, beers=beers) == 0:
+            self.debug.print(app_module="UserTransaction", text="Le perdant n'a plus assez de bieres a offrir")
+            raise HTTPException(status_code=405, detail="Le perdant n'a plus assez de bieres a offrir !")
         self.debug.print(app_module="UserTransaction", text="Calcul des changements de bieres...")
         beers_left_looser = self.db.call_function(
             name="how_many_beer",
@@ -195,7 +245,6 @@ class UsersAPI:
         ) + beers
 
         self.debug.print(app_module="UserTransaction", text="Modifications des bieres dans la DB...")
-
         self.db.call_procedure(
             name="do_beer_transaction",
             uid=loser_id,

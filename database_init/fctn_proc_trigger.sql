@@ -149,8 +149,8 @@ CREATE FUNCTION `is_friend`(`user_id1` INT, `user_id2` INT) RETURNS tinyint(1)
 BEGIN
     RETURN EXISTS (SELECT 1
                    FROM amis
-                   WHERE (userid1 = user_id1 AND userid2 = user_id2)
-                      OR (userid1 = user_id2 AND userid2 = user_id1));
+                   WHERE (IDuser1 = user_id1 AND IDuser2 = user_id2)
+                      OR (IDuser1 = user_id2 AND IDuser2 = user_id1));
 END$$
 
 --
@@ -278,6 +278,65 @@ BEGIN
     LIMIT 1;
 
     RETURN user_title;
+END$$
+
+-- Fonction pour savoir si il reste assez de bieres a decompter
+DROP FUNCTION IF EXISTS has_enough_beer$$
+
+
+CREATE FUNCTION `has_enough_beer`(`uid` INT, `beers_count` INT) RETURNS int(11)
+BEGIN
+    DECLARE beers INT;
+
+    SELECT reserve_biere INTO beers FROM utilisateurs WHERE user_ID = uid;
+
+    IF beers - beers_count >= 0 THEN
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END$$
+
+-- GET TOKEN OWNER ID
+DROP FUNCTION IF EXISTS get_token_owner_id$$
+
+
+CREATE FUNCTION `get_token_owner_id`(p_token VARCHAR(255)) RETURNS TINYINT(4)
+    DETERMINISTIC
+BEGIN
+    DECLARE result TINYINT;
+
+    SELECT user_id
+    INTO result
+    FROM token_table
+    WHERE token = p_token;
+
+    RETURN result;
+END$$
+
+-- GET TOKEN OWNER ID
+DROP FUNCTION IF EXISTS get_friends$$
+
+CREATE FUNCTION `get_friends`(user_id INT) RETURNS longtext CHARSET utf8mb4 COLLATE utf8mb4_general_ci
+    DETERMINISTIC
+BEGIN
+    DECLARE result LONGTEXT;
+
+    SELECT JSON_ARRAYAGG(
+                   JSON_OBJECT(
+                           'user_ID', utilisateurs.user_ID,
+                           'nom', utilisateurs.nom,
+                           'prenom', utilisateurs.prenom,
+                           'pseudo', utilisateurs.pseudo,
+                           'image', utilisateurs.image
+                       )
+               )
+    INTO result
+    FROM amis
+             INNER JOIN utilisateurs ON amis.IDuser2 = utilisateurs.user_ID
+    WHERE amis.IDuser1 = user_id;
+
+    RETURN result;
 END$$
 
 DELIMITER ;

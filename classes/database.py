@@ -3,22 +3,27 @@ from os import getenv
 
 from dotenv import load_dotenv
 from mysql.connector import connect, Error, ProgrammingError
+from classes.debug import Debug
 
 load_dotenv()
 
 
 class Database:
-    def __init__(self):
+    def __init__(self, debug: Debug):
         self.socket = None
         self.cursor = None
         self.commands = []
+        self.debug = debug
 
     def connect(self) -> connect or Error or ProgrammingError:
         """
         Création d'un socket de connexion permettant la communication entre la DB et le backend FastAPI
         :return:
         """
-        print(f" > Tentative de connexion avec {getenv(key='DB_USERNAME')}@{getenv(key='DB_SERVER')}")
+        self.debug.print(
+            app_module="MySQL",
+            text=f"Tentative de connexion: {getenv(key='DB_USERNAME')}@{getenv(key='DB_SERVER')}"
+        )
         try:
             connection = connect(
                 host=getenv(key="DB_SERVER"),
@@ -27,9 +32,10 @@ class Database:
                 database=getenv(key="DB_NAME"),
                 port=getenv(key="DB_PORT")
             )
-            print(
-                f" > Connecté à {getenv('DB_NAME')} "
-                f"via {getenv('DB_USERNAME')}@{getenv('DB_SERVER')}")
+            self.debug.print(
+                app_module="MySQL",
+                text=f"Connecté à {getenv(key='DB_NAME')} !"
+            )
             self.socket = connection
             self.cursor = connection.cursor()
             return True

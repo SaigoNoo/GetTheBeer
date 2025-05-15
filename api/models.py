@@ -6,13 +6,18 @@ from pydantic import BaseModel
 
 
 class CreateUser(BaseModel):
-    l_name: str
     f_name: str
+    l_name: str
     username: str
+    image: str = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
     email: str
-    image: bytes
-    password: str
     bio: str
+    password: str
+
+
+class Authentification(BaseModel):
+    username: str
+    password: str
 
 
 class DeleteUser(BaseModel):

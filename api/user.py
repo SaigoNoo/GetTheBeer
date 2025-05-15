@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 
-from api.models import CreateUser, ResetEmailResponse, RequestPasswordReset
+from api.models import CreateUser, ResetEmailResponse, RequestPasswordReset, Authentification
 from classes.database import Database
 from classes.debug import Debug
 from classes.users import UsersAPI
@@ -42,15 +42,22 @@ def load(app: FastAPI, db: Database, debug: Debug) -> None:
         tags=["Reset"]
     )
     async def reset_password(data: ResetEmailResponse):
-        pass
+        return user.reset_password(token=data.token, new_password=data.password)
 
     @app.post(
         path="/api/user/login/",
         description="Connexion d'un utilisateur",
         tags=["Authentification"]
     )
-    async def login(username: str, password: str):
-        return user.login_user(username=username, password=password)
+    async def login(data: Authentification, request: Request):
+        return user.login_user(username=data.username, password=data.password, request=request)
+
+    @app.get(
+        path="/api/user/list_friends",
+        tags=["Friends", "Show"]
+    )
+    async def show_friends(request: Request):
+        return user.list_friends(my_id=request.session.get("user_id"))
 
     @app.post(
         path="/api/user/add_friend/",
@@ -105,23 +112,43 @@ def load(app: FastAPI, db: Database, debug: Debug) -> None:
 
     @app.get(
         path="/api/user/me",
+        description="Wait...",
         tags=["Users", "Show"]
     )
     async def get_current_user(request: Request):
         user_id = request.session.get("user_id")
+
         if user_id is None:
-            print("test1")
             raise HTTPException(status_code=401, detail="Non authentifié")
-        print("test2")
-        # Récupère les infos utilisateur selon ton besoin (ici, pseudo)
+
         pseudo = user.get_username(
             email=user.get_mail(
                 id_user=user_id
             )
         )
         reserve_biere = db.call_function(name="get_user_beer_reserve", uid=user_id)
-        print(pseudo)
         return {"user": {"user_id": user_id, "pseudo": pseudo, "reserve_biere": reserve_biere}}
+
+    @app.get("/api/user/profil")
+    async def get_profile(request: Request):
+        user_id = request.session.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Non authentifié")
+        user_data = user.get_user_infos(user_id=user_id)
+        if not user_data:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+        return user_data
+
+    @app.get(
+        path="/api/game/opponents",
+        tags=["Friends", "Game"]
+    )
+    async def get_users(request: Request):
+        user_id = request.session.get("user_id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Non authentifié")
+        opponents = user.get_opponent(user_id=user_id)
+        return opponents
 
     @app.get("/api/users/opponents")
     async def get_users(request: Request):
