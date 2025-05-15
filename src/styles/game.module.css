@@ -1,0 +1,129 @@
+.game-page {
+    font-family: "IM FELL Great Primer SC", serif;
+    background: url("../img/fond.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    position: relative;
+}
+
+.top-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(180, 123, 0, 0.5);
+    padding: 10px 30px;
+    position: relative;
+    height: 100px;
+}
+
+.left-content {
+    display: flex;
+    align-items: left;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+    width:auto;
+    border:none;
+}
+
+.title h1 {
+    font-size: 40px;
+    margin: 0;
+    color: white;
+}
+
+.title h2 {
+    font-size: 20px;
+    margin: 0;
+    color: white;
+}
+
+.right-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacement entre les boutons */
+    margin-right: 50px; /* Ajuste la position si nécessaire */
+}
+
+.right-content button {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.right-content button:hover {
+    background: rgba(180, 123, 0, 0.5);
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column; /* Pour mettre les éléments en colonne */
+    align-items: center; /* Centrer horizontalement */
+    justify-content: center; /* Centrer verticalement */
+    height: calc(100vh - 100px); /* 100px = hauteur du header */
+    gap: 20px; /* Espace entre le header et la roulette */
+}
+
+.game-container img {
+    width: auto;
+    height: auto;
+    background-color: black;
+    border: 2px solid bisque;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.spinning {
+    animation: spin 0.1s infinite linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotateX(0deg);
+    }
+    to {
+        transform: rotateX(360deg);
+    }
+}
+
+
+.button {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:hover {
+    background: #785b20;
+}
+
+.button:disabled {
+    background: grey;
+    cursor: not-allowed;
+}
+
+.slot-machine {
+    display: flex;
+    justify-content: center;
+    width: 40em;
+    height: 20%;
+    gap: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border: 5px solid bisque;;
+    border-radius: 10px;
+}

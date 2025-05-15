@@ -1,0 +1,149 @@
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(180, 123, 0, 0.5);
+    padding: 10px 30px;
+    height: 100px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+}
+
+.titre h1 {
+    font-size: 40px;
+    color: white;
+    margin: 0;
+}
+
+.titre h2 {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bouton {
+    background-color: #b47b00;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bouton:hover {
+    background-color: #9c6600;
+}
+
+/* === PAGE === */
+.pageWrapper {
+    background-color: black;
+    min-height: 100vh;
+    color: white;
+}
+
+/* Centre le contenu */
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15vh;
+}
+
+.profileCard {
+    display: flex;
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    padding: 40px;
+    gap: 40px;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+}
+
+.profileImage {
+    width: 250px;
+    height: 250px;
+    background-color: #444;
+    border-radius: 50%;
+    border: 3px solid #ffcc00;
+    background-size: cover;
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0 20px;
+    position: relative;
+    left: 15%;
+}
+
+.headerLine {
+    color: #9c6600;
+    font-weight: bold;
+}
+
+.dataLine {
+    font-style: italic;
+    position: relative;
+    top: -18px;
+    color: #b0b0b0;
+}
+
+.statistiques {
+    color: #fcb900;
+    font-weight: bold;
+}
+
+.bio {
+    font-style: italic;
+}
+
+.actions {
+    margin-top: 5vh;
+    display: inline;
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.button {
+    background-color: #b47b00;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 2.5%;
+}
+
+.button:hover {
+    background-color: #9c6600;
+}
+
+.loading {
+    color: white;
+    text-align: center;
+    margin-top: 50px;
+}

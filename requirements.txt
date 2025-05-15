@@ -1,9 +1,0 @@
-fastapi~=0.115.12
-uvicorn
-dotenv~=0.9.9
-mysql-connector
-bcrypt~=4.3.0
-itsdangerous
-pydantic~=2.11.3
-python-dotenv~=1.1.0
-starlette~=0.46.2
