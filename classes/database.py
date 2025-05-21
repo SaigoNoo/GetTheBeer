@@ -3,6 +3,7 @@ from os import getenv
 
 from dotenv import load_dotenv
 from mysql.connector import connect, Error, ProgrammingError
+
 from classes.debug import Debug
 
 load_dotenv()
@@ -44,7 +45,22 @@ class Database:
         except KeyError as err:
             print(f" > Erreur de clé: {err} n'existe pas dans .env ou le champ est vide !")
 
+    def reconnect_if_needed(self):
+        try:
+            self.debug.print(
+                app_module="MySQL",
+                text=f"Vérification de si le curseaur est actif..."
+            )
+            self.socket.ping(reconnect=True, attempts=3, delay=5)
+        except Error:
+            self.debug.print(
+                app_module="MySQL",
+                text=f"Reconnexion et actualisation du curseur !"
+            )
+            self.connect()
+
     def call_function(self, name: str, to_json: bool = False, **parameters):
+        self.reconnect_if_needed()
         if len(parameters) > 0:
             parameters = str(tuple(parameters.values()))
             if parameters[-2] == ",":
@@ -68,6 +84,8 @@ class Database:
             return result
 
     def call_procedure(self, name: str, **parameters):
+        self.reconnect_if_needed()
+
         if len(parameters) > 0:
             parameters = list(parameters.values())
         try:
