@@ -1,0 +1,143 @@
+.login-container {
+    font-family: "IM FELL Great Primer SC", serif;
+    background: url("../img/fond.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    position: relative;
+    top: 15vh;
+    right: 5%;
+}
+
+/* partie jaune */
+.content {
+    position: absolute;
+    top: 30%;
+    right: 0;
+    width: 35%;
+    transform: translateY(-50%);
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1; /* passe le cont. au dessus du jaune */
+}
+
+.content h1 {
+    font-weight: 400;
+    font-size: 7vw;
+    line-height: 10vw;
+    letter-spacing: -0.017em;;
+    vertical-align: middle;
+    margin-bottom: 2%;
+    color: white;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.form_label {
+    margin: 5px 0;
+}
+
+.form_input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.form_submit {
+    background-color: #b47b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form_check_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espace entre la case et le label */
+    margin-bottom: 1rem; /* Un peu d'air avant le bouton */
+}
+
+.form_checkbox {
+    margin: 0;
+}
+
+.form_label {
+    margin: 0;
+}
+
+.infobull {
+    margin-top: 15vh;
+    color: rgb(128, 128, 128);
+    background-color: white;
+    padding: 15px;
+    border-radius: 25px;
+}
+
+
+#info {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+#link_signup {
+    float: right;
+}
+
+.forgot-password {
+    color: #8fb2e6;
+    text-decoration: none;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+
+/*Partie en bas à gauche avec le h1, h2 et img*/
+
+.bottom-left {
+    position: absolute;
+    top: 55vh;
+    left: 0;
+    right: 35%; /* S'arrête avant la partie jaune */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* Centre l'ensemble entre la gauche et la partie jaune */
+    gap: 20px;
+}
+
+.bottom-left img {
+    height: 120px;
+    width: auto;
+}
+
+.bottom-left-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    text-shadow: -1px 0 black, 0 4px black, 4px 0 black, 0 -1px black;
+}
+
+.bottom-left h1 {
+    font-weight: 400;
+    font-size: 115px;
+    line-height: 150px;
+    color: white;
+    margin: 0;
+}
+
+.bottom-left h2 {
+    font-weight: 300;
+    font-size: 45px;
+    color: white;
+    margin-top: -3vh;
+    margin-left: 4%;
+}
