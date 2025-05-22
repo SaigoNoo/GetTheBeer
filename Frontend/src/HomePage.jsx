@@ -4,130 +4,189 @@ import styles from "./styles/acceuil.module.css";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "./context/UserContext.jsx";
 import axios from "axios";
+import {toast, Toaster} from 'react-hot-toast';
+
 
 const HomePage = () => {
     const navigate = useNavigate();
     const {user, loading, logout} = useAuth();
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [friends, setFriends,] = useState([]);
+    const [friends, setFriends] = useState([]);
+
+    const deleteFriend = async (friendId) => {
+        try {
+            await axios.post(
+                `http://localhost:8000/api/user/delete_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
+                {},
+                {headers: {accept: "application/json"}, withCredentials: true}
+            );
+            fetchFriends();
+            toast.success("Ami supprimé avec succès");
+        } catch (error) {
+            toast.error("Erreur lors de la suppression de l'ami !");
+            console.error("Erreur lors de la suppression de l'ami :", error);
+        }
+    };
+
+    const addFriend = async (friendId) => {
+        try {
+            await axios.post(
+                `http://localhost:8000/api/user/add_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
+                {},
+                {headers: {accept: "application/json"}, withCredentials: true}
+            );
+            fetchFriends();
+            toast.success("Ami ajouté avec succès !");
+        } catch (error) {
+            toast.error("Erreur lors de l'ajout de l'ami !");
+            console.error("Erreur lors de l'ajout d'ami :", error);
+        }
+    };
 
     useEffect(() => {
         if (!loading && !user) {
             navigate("/");
         } else if (!loading && user) {
-            axios
-                .get("http://localhost:8000/api/user/list_friends", {
-                    withCredentials: true,
-                })
-                .then((response) => {
-                    const data = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
-                    setFriends(data);
-                })
-                .catch((error) => {
-                    console.error("Erreur lors de la récupération des amis :", error);
-                });
+            fetchFriends();
         }
-    }, [user, loading, navigate]);
+    }, [loading, user]);
+
+    const fetchFriends = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/api/user/list_friends", {withCredentials: true});
+            const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+            setFriends(data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des amis :", error);
+        }
+    };
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            if (search.trim() !== "") {
-                axios
-                    .get("http://127.0.0.1:8000/api/user/show_members", {
-                        withCredentials: true,
-                    })
-                    .then((response) => {
-                        const data = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
+            if (search.trim()) fetchSearchResults();
+            else setSearchResults([]);
+        }, 500);
 
-                        // On filtre en fonction du pseudo, prénom ou nom
-                        const filtered = data.filter((user) => {
-                            const searchLower = search.toLowerCase();
-                            return (
-                                user.pseudo.toLowerCase().includes(searchLower) ||
-                                user.prenom.toLowerCase().includes(searchLower) ||
-                                user.nom.toLowerCase().includes(searchLower)
-                            );
-                        });
-
-                        setSearchResults(filtered);
-                    })
-                    .catch((error) => {
-                        console.error("Erreur lors de la recherche :", error);
-                    });
-            } else {
-                setSearchResults([]); // reset si rien tapé
-            }
-        }, 500); // délai pour éviter trop de requêtes
-
-        return () => clearTimeout(delayDebounce); // clean le timeout si tu tapes vite
+        return () => clearTimeout(delayDebounce);
     }, [search]);
 
-    if (loading) {
-        return <div>Chargement...</div>;
-    }
+    const fetchSearchResults = async () => {
+        try {
+            const res = await axios.get("http://127.0.0.1:8000/api/user/show_members", {withCredentials: true});
+            const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
 
-    return (<div className={styles["home-page"]}>
-        <header>
-            <div className={styles["top-banner"]}>
-                <div className={styles["left-content"]}>
-                    <img src={beerMug} alt="Logo des bières" className={styles.logo}/>
-                    <div className={styles.title}>
-                        <h1>Get The Beer</h1>
-                        <h2>Le jeu de hasard des gens heureux</h2>
+            const filtered = data
+                .filter(u => u.user_ID !== user.user_id)
+                .filter(u =>
+                    [u.pseudo, u.prenom, u.nom].some(field =>
+                        field.toLowerCase().includes(search.toLowerCase())
+                    )
+                );
+
+            setSearchResults(filtered);
+        } catch (error) {
+            console.error("Erreur lors de la recherche :", error);
+        }
+    };
+
+    if (loading) return <div>Chargement...</div>;
+
+    return (
+        <>
+            <Toaster position="bottom-right" reverseOrder={false}/>
+            <div className={styles["home-page"]}>
+                <header>
+                    <div className={styles["top-banner"]}>
+                        <div className={styles["left-content"]}>
+                            <img src={beerMug} alt="Logo des bières" className={styles.logo}/>
+                            <div className={styles.title}>
+                                <h1>Get The Beer</h1>
+                                <h2>Le jeu de hasard des gens heureux</h2>
+                            </div>
+                        </div>
+                        <div className={styles["right-content"]}>
+                            <button className={styles["account-btn"]} onClick={() => navigate("/profil")}>Mon compte
+                            </button>
+                            <button className={styles["play-btn"]} onClick={() => navigate("/game")}>Jouer</button>
+                            <button className={styles["logout-btn"]} onClick={logout}>Déconnexion</button>
+                        </div>
                     </div>
-                </div>
-                <div className={styles["right-content"]}>
-                    <button className={styles["account-btn"]} onClick={() => navigate("/profil")}>Mon compte
-                    </button>
-                    <button className={styles["play-btn"]} onClick={() => navigate("/game")}>Jouer</button>
-                    <button className={styles["logout-btn"]} onClick={logout}>Déconnexion</button>
-                </div>
-            </div>
-        </header>
+                </header>
 
-        <main className={styles["main-content"]}>
-            <section className={styles.stats}>
-                <h3>Mes stats</h3>
-            </section>
-            <section className={styles.news}>
-                <h3>Actualités</h3>
-            </section>
-            <section className={styles.friends}>
-                <div className={styles.searchFriends}>
-                    <h3>Rechercher un ami:</h3>
-                    <input
-                        type="search"
-                        placeholder="Rechercher un ami..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                    {searchResults.length > 0 && (
-                        <ul className={styles.searchResults}>
-                            {searchResults.map((user) => (
-                                <li key={user.id}>
-                                    <img src={user.image} className={styles.iconFriend}/>
-                                    {user.pseudo} - {user.prenom} {user.nom}
-                                    <a onClick={() => console.log("Ajout d'ami en WIP")}>➕</a>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-                <h3>Mes amis</h3>
-                <ul>
-                    {Array.isArray(friends) && friends.length > 0 ? (friends.map((ami) => (
-                        <span className={styles.friendLine}>
-                                    <img className={styles.iconFriend} src={ami.image}></img>
-                            {ami.pseudo} - {ami.prenom} {ami.nom}
-                            <span className={styles.actions}>
-                                        <a href="#">❌ Supprimer</a>
-                                    </span>
-                                </span>))) : (<li>Aucun ami pour le moment</li>)}
-                </ul>
-            </section>
-        </main>
-    </div>);
+                <main className={styles["main-content"]}>
+                    <section className={styles.stats}>
+                        <h3>Mes stats</h3>
+                    </section>
+
+                    <section className={styles.news}>
+                        <h3>Actualités</h3>
+                    </section>
+
+                    <section className={styles.friends}>
+                        <div className={styles.searchFriends}>
+                            <h3>Rechercher un ami</h3>
+                            <input
+                                type="search"
+                                placeholder="Rechercher un ami..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                            {search.trim() && (
+                                searchResults.length > 0 ? (
+                                    <div className={styles.searchResults}>
+                                        {searchResults.map((user) => (
+                                            <div
+                                                key={user.user_ID}
+                                                className={`${styles.friendLine} ${styles.addFriend}`}  // fond vert pour ajout
+                                                onClick={() => addFriend(user.user_ID)}
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') addFriend(user.user_ID);
+                                                }}
+                                            >
+                                                <img className={styles.iconFriend} src={user.image} alt="user"/>
+                                                <div className={styles.textContent}>
+                                                    {user.pseudo} - {user.prenom} {user.nom}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p>Aucun résultat pour "{search}"</p>
+                                )
+                            )}
+
+                            <h3>Mes amis</h3>
+                            {Array.isArray(friends) && friends.length > 0 ? (
+                                friends.map((ami) => (
+                                    <div
+                                        key={ami.user_ID}
+                                        className={`${styles.friendLine} ${styles.deleteFriend}`}  // fond rouge pour suppression
+                                        onClick={() => deleteFriend(ami.user_ID)}
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') deleteFriend(ami.user_ID);
+                                        }}
+                                    >
+                                        <img className={styles.iconFriend} src={ami.image} alt="ami"/>
+                                        <div className={styles.textContent}>
+                                            {ami.pseudo} - {ami.prenom} {ami.nom}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Aucun ami pour le moment</p>
+                            )}
+
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </>
+    );
 };
 
 export default HomePage;
