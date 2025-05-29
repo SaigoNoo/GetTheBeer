@@ -129,6 +129,35 @@ class TestAPIEndpoints(TestCase):
             received_keys=list(response.json().keys())
         )
 
+    def test_debug_true(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/system/debug?debug_mode=true",
+            headers={
+                "Accept": "application/json"
+            }
+        )
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["message"],
+            received_keys=list(response.json().keys())
+        )
+
+    def test_debug_false(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/system/debug?debug_mode=false",
+            headers={
+                "Accept": "application/json"
+            }
+        )
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["message"],
+            received_keys=list(response.json().keys())
+        )
+
+    def
 
 if __name__ == '__main__':
     load_dotenv()
