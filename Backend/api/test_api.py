@@ -157,8 +157,23 @@ class TestAPIEndpoints(TestCase):
             received_keys=list(response.json().keys())
         )
 
-    def
+    def test_login(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/user/login",
+            headers={"Accept": "application/json"},
+            json={
+                "username": "Trisouille",  # adapte selon ta DB
+                "password": "user123"
+            },
+            timeout=5
+        )
 
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["success", "code", "message"],
+            received_keys=list(response.json().keys())
+        )
 if __name__ == '__main__':
     load_dotenv()
     main()
