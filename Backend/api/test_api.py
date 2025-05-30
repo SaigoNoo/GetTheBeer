@@ -307,6 +307,19 @@ class TestAPIEndpoints(TestCase):
             received_keys=list(response.json().keys())
         )
 
+    def test_test(self):
+        response = get(
+            url=f"{getenv('BACKEND_URL')}/api/test",
+            headers={"Accept": "application/json"},
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["code", "message"],
+            received_keys=list(response.json().keys())
+        )
 
 if __name__ == '__main__':
     load_dotenv()
