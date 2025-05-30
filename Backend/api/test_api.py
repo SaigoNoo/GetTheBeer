@@ -63,7 +63,7 @@ class TestAPIEndpoints(TestCase):
         self.make_test(
             response=response,
             type_awaited=dict,
-            expected_keys=["mode", "detail"],
+            expected_keys=["message"],
             received_keys=list(response.json().keys()),
             code_405_allowed=True
         )
@@ -174,6 +174,42 @@ class TestAPIEndpoints(TestCase):
             expected_keys=["success", "code", "message"],
             received_keys=list(response.json().keys())
         )
+
+    def test_delete_friend(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/user/delete_friend/?user_id=1&friend_id=2",
+            headers={
+                "Accept": "application/json"
+            },
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["message"],
+            received_keys=list(response.json().keys()),
+            code_405_allowed=True
+        )
+
+    def test_logout(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/user/logout",
+            headers={
+                "Accept": "application/json"
+            },
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["code", "message"],
+            received_keys=list(response.json().keys()),
+            code_405_allowed=True
+        )
+
+
 if __name__ == '__main__':
     load_dotenv()
     main()
