@@ -4,7 +4,9 @@ import styles from "./styles/connexion.module.css";
 import beerMug from "./img/beermug.png";
 import axios from "axios";
 import {useAuth} from "./context/UserContext.jsx";
-import {Toaster, toast} from 'react-hot-toast';
+import {toast, Toaster} from 'react-hot-toast';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -40,7 +42,7 @@ const LoginPage = () => {
     const [data, setData] = useState(null);
     useEffect(() => {
         axios
-            .get("http://localhost:8000/api/test")
+            .get(`${apiUrl}/api/test`)
             .then((response) => setData(response.data.message))
             .catch((error) => {
                 console.error("Erreur de connexion au backend :", error);
@@ -96,9 +98,12 @@ const LoginPage = () => {
 
                     <a href="/reset" className={styles["forgot-password"]}>Mot de passe oublié ?</a>
                     <a href="/signUp" className={styles["forgot-password"]} id={styles.link_signup}>Créer un compte</a>
-                <p className={styles["infobull"]}>Information: GetTheBeer est un énorme projet développé par 5 étudiants, et étant donné que les technologies que nous mettons en place
-                sont nouvelles pour nous, nous avons eu un peu de mal a tout finir, il se peut donc que certaines fonctionnalitées vous semblent
-                relativement basiques, mais elles seronts améliorées, visuellement et fonctionnellement avec le temps !</p>
+                    <p className={styles["infobull"]}>Information: GetTheBeer est un énorme projet développé par 5
+                        étudiants, et étant donné que les technologies que nous mettons en place
+                        sont nouvelles pour nous, nous avons eu un peu de mal a tout finir, il se peut donc que
+                        certaines fonctionnalitées vous semblent
+                        relativement basiques, mais elles seronts améliorées, visuellement et fonctionnellement avec le
+                        temps !</p>
                 </div>
 
                 <div className={styles["bottom-left"]}>

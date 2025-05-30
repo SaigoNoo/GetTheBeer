@@ -1,4 +1,5 @@
-DELIMITER $$
+DELIMITER
+$$
 
 --
 -- OBTENIR LES USERS
@@ -9,7 +10,8 @@ DROP FUNCTION IF EXISTS get_all_users$$
 CREATE FUNCTION `get_all_users`() RETURNS longtext
     DETERMINISTIC
 BEGIN
-    DECLARE result LONGTEXT;
+    DECLARE
+        result LONGTEXT;
 
     SELECT JSON_ARRAYAGG(
                    JSON_OBJECT(
@@ -36,11 +38,11 @@ DROP FUNCTION IF EXISTS get_user_password$$
 
 CREATE FUNCTION get_user_password(username VARCHAR(100))
     RETURNS VARCHAR(255)
-        CHARACTER SET utf8mb4
-            COLLATE utf8mb4_general_ci
+        CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
     DETERMINISTIC
 BEGIN
-    DECLARE user_pwd VARCHAR(255);
+    DECLARE
+        user_pwd VARCHAR(255);
 
     SELECT motdepasse
     INTO user_pwd
@@ -75,7 +77,8 @@ CREATE PROCEDURE update_password_by_token(
     IN p_nouveau_mdp VARCHAR(255)
 )
 BEGIN
-    DECLARE v_user_id INT;
+    DECLARE
+        v_user_id INT;
 
     SELECT user_id
     INTO v_user_id
@@ -83,7 +86,8 @@ BEGIN
     WHERE token = p_token
     LIMIT 1;
 
-    IF v_user_id IS NOT NULL THEN
+    IF
+        v_user_id IS NOT NULL THEN
         UPDATE utilisateurs
         SET motdepasse = p_nouveau_mdp
         WHERE user_ID = v_user_id;
@@ -113,7 +117,8 @@ CREATE FUNCTION have_reset_token(uid INT)
     RETURNS TINYINT
     DETERMINISTIC
 BEGIN
-    DECLARE result TINYINT;
+    DECLARE
+        result TINYINT;
 
     SELECT EXISTS (SELECT 1
                    FROM token_table
@@ -128,9 +133,11 @@ END$$
 --
 -- Activer le scheduler si ce n'est pas déjà fait
 -- Événement : suppression des tokens vieux de plus de 15 minutes
-DROP EVENT IF EXISTS delete_old_tokens$$
+DROP
+    EVENT IF EXISTS delete_old_tokens$$
 
-CREATE EVENT delete_old_tokens
+CREATE
+    EVENT delete_old_tokens
     ON SCHEDULE EVERY 1 MINUTE
     ON COMPLETION NOT PRESERVE
     ENABLE
@@ -144,7 +151,8 @@ CREATE EVENT delete_old_tokens
 --
 DROP FUNCTION IF EXISTS is_friend$$
 
-CREATE FUNCTION `is_friend`(`user_id1` INT, `user_id2` INT) RETURNS tinyint(1)
+CREATE FUNCTION `is_friend`(`user_id1` INT, `user_id2` INT)
+    RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
     RETURN EXISTS (SELECT 1
@@ -160,7 +168,8 @@ DROP PROCEDURE IF EXISTS add_friend$$
 
 CREATE PROCEDURE `add_friend`(IN `user_id1` INT, IN `user_id2` INT)
 BEGIN
-    IF NOT is_friend(user_id1, user_id2) THEN
+    IF
+        NOT is_friend(user_id1, user_id2) THEN
         INSERT INTO amis (IDuser1, IDuser2)
         VALUES (user_id1, user_id2);
     END IF;
@@ -173,7 +182,8 @@ DROP PROCEDURE IF EXISTS delete_friend$$
 
 CREATE PROCEDURE `delete_friend`(IN `user_id1` INT, IN `user_id2` INT)
 BEGIN
-    IF is_friend(user_id1, user_id2) THEN
+    IF
+        is_friend(user_id1, user_id2) THEN
         DELETE
         FROM amis
         WHERE (IDuser1 = user_id1 AND IDuser2 = user_id2)
@@ -191,7 +201,8 @@ CREATE FUNCTION get_user_beer_reserve(uid INT)
     NOT DETERMINISTIC
     READS SQL DATA
 BEGIN
-    DECLARE result INT;
+    DECLARE
+        result INT;
 
     SELECT reserve_biere
     INTO result
@@ -205,14 +216,19 @@ END$$
 -- MODIFIER LA QTE DE BIERES D'UN USER
 --
 
-DROP PROCEDURE IF EXISTS do_beer_transaction$$
+DROP PROCEDURE IF EXISTS getTheBeer.do_beer_transaction$$
 
-CREATE PROCEDURE do_beer_transaction(IN uid INT, IN beer INT)
+CREATE PROCEDURE `do_beer_transaction`(IN `w_uid` INT, IN `l_uid` INT, IN `beer` INT)
 BEGIN
     UPDATE utilisateurs
     SET reserve_biere = reserve_biere - beer
-    WHERE user_ID = uid;
+    WHERE user_ID = l_uid;
+
+    UPDATE utilisateurs
+    SET biere_gagnee = biere_gagnee + beer
+    WHERE user_ID = w_uid;
 END$$
+
 
 --
 -- VOIR LES BEERS D'UN UTILISATEUR
@@ -225,22 +241,30 @@ CREATE FUNCTION how_many_beer(uid INT)
     DETERMINISTIC
     READS SQL DATA
 BEGIN
-    DECLARE beers INT;
-    SELECT reserve_biere INTO beers FROM utilisateurs WHERE user_ID = uid;
+    DECLARE
+        beers INT;
+    SELECT reserve_biere
+    INTO beers
+    FROM utilisateurs
+    WHERE user_ID = uid;
     RETURN beers;
 END$$
 --
-DROP PROCEDURE IF EXISTS add_transaction$$
+DROP PROCEDURE IF EXISTS getTheBeer.do_beer_transaction;
 
-
-CREATE PROCEDURE add_transaction(
-    IN looser_uid INT,
-    IN winner_uid INT,
-    IN beers_owed INT
+CREATE PROCEDURE `do_beer_transaction`(
+    IN w_uid INT,
+    IN l_uid INT,
+    IN beer INT
 )
 BEGIN
-    INSERT INTO transactions(debtor_ID, creditor_ID, beers_owed)
-    VALUES (looser_uid, winner_uid, beers_owed);
+    UPDATE utilisateurs
+    SET reserve_biere = reserve_biere - beer
+    WHERE user_ID = l_uid;
+
+    UPDATE utilisateurs
+    SET biere_gagnee = biere_gagnee + beer
+    WHERE user_ID = w_uid;
 END$$
 
 -- Fonction pour récupérer le total de bières gagnées par un utilisateur
@@ -250,7 +274,8 @@ CREATE FUNCTION get_user_beers(user_id INT)
     RETURNS INT
     DETERMINISTIC
 BEGIN
-    DECLARE total_beers INT;
+    DECLARE
+        total_beers INT;
 
     SELECT COALESCE(SUM(bieres), 0)
     INTO total_beers
@@ -268,7 +293,8 @@ CREATE FUNCTION get_user_title(user_id INT)
     RETURNS VARCHAR(255)
     DETERMINISTIC
 BEGIN
-    DECLARE user_title VARCHAR(255);
+    DECLARE
+        user_title VARCHAR(255);
 
     SELECT levelname
     INTO user_title
@@ -284,13 +310,19 @@ END$$
 DROP FUNCTION IF EXISTS has_enough_beer$$
 
 
-CREATE FUNCTION `has_enough_beer`(`uid` INT, `beers_count` INT) RETURNS int(11)
+CREATE FUNCTION `has_enough_beer`(`uid` INT, `beers_count` INT)
+    RETURNS INT
 BEGIN
-    DECLARE beers INT;
+    DECLARE
+        beers INT;
 
-    SELECT reserve_biere INTO beers FROM utilisateurs WHERE user_ID = uid;
+    SELECT reserve_biere
+    INTO beers
+    FROM utilisateurs
+    WHERE user_ID = uid;
 
-    IF beers - beers_count >= 0 THEN
+    IF
+        beers - beers_count >= 0 THEN
         RETURN 1;
     ELSE
         RETURN 0;
@@ -301,10 +333,12 @@ END$$
 DROP FUNCTION IF EXISTS get_token_owner_id$$
 
 
-CREATE FUNCTION `get_token_owner_id`(p_token VARCHAR(255)) RETURNS TINYINT(4)
+CREATE FUNCTION `get_token_owner_id`(p_token VARCHAR(255))
+    RETURNS TINYINT(4)
     DETERMINISTIC
 BEGIN
-    DECLARE result TINYINT;
+    DECLARE
+        result TINYINT;
 
     SELECT user_id
     INTO result
@@ -320,7 +354,8 @@ DROP FUNCTION IF EXISTS get_friends$$
 CREATE FUNCTION `get_friends`(user_id INT) RETURNS longtext CHARSET utf8mb4 COLLATE utf8mb4_general_ci
     DETERMINISTIC
 BEGIN
-    DECLARE result LONGTEXT;
+    DECLARE
+        result LONGTEXT;
 
     SELECT JSON_ARRAYAGG(
                    JSON_OBJECT(
@@ -338,5 +373,70 @@ BEGIN
 
     RETURN result;
 END$$
+
+-- COMPTER GAMES
+DROP FUNCTION IF EXISTS getTheBeer.count_games$$
+
+CREATE FUNCTION count_games(user_id INT)
+    RETURNS INT
+BEGIN
+    DECLARE games_count INT;
+
+    SELECT COUNT(transaction_ID)
+    INTO games_count
+    FROM transactions
+    WHERE debtor_ID = user_id
+       OR creditor_ID = user_id;
+
+    RETURN games_count;
+END$$
+
+-- COMPTER BIERES
+
+DROP PROCEDURE IF EXISTS beers_bet;
+
+CREATE FUNCTION beers_bet(user_id INT) RETURNS INT
+BEGIN
+    DECLARE total_beted INT;
+
+    SELECT SUM(beers_owed)
+    INTO total_beted
+    FROM transactions
+    WHERE debtor_ID = user_id
+       OR creditor_ID = user_id;
+
+    RETURN IFNULL(total_beted, 0);
+END$$
+
+-- GAINS
+DROP FUNCTION IF EXISTS get_win_beer;
+
+CREATE FUNCTION get_win_beer(user_id INT)
+    RETURNS INT
+BEGIN
+    DECLARE total_beers INT;
+    SELECT SUM(beers_owed)
+    INTO total_beers
+    FROM transactions
+    WHERE creditor_ID = user_id;
+
+    RETURN IFNULL(total_beers, 0);
+END$$
+
+-- PERTES
+DROP FUNCTION IF EXISTS get_loose_beer;
+
+CREATE FUNCTION get_loose_beer(user_id INT)
+    RETURNS INT
+BEGIN
+    DECLARE total_beers INT;
+    SELECT SUM(beers_owed)
+    INTO total_beers
+    FROM transactions
+    WHERE debtor_ID = user_id;
+
+    RETURN IFNULL(total_beers, 0);
+END$$
+
 
 DELIMITER ;

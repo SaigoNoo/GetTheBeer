@@ -3,7 +3,9 @@ import {useNavigate} from "react-router-dom";
 import beermug from "./img/beermug.png"
 import styles from "./styles/signup.module.css";
 import {useAuth} from "./context/UserContext.jsx";
-import {Toaster, toast} from 'react-hot-toast';
+import {toast, Toaster} from 'react-hot-toast';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 
 const SignupPage = () => {
@@ -41,7 +43,7 @@ const SignupPage = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/user/create", {
+            const response = await fetch(`${apiUrl}/api/user/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

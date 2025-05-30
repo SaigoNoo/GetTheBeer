@@ -31,10 +31,15 @@ app.add_middleware(
     secret_key=secret_key
 )
 
+debug.print(
+    app_module="CORS",
+    text=f"Autorisation données à {getenv(key='CORS_URL')}..."
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173"
+        str(getenv(key="CORS_URL"))
     ],
     allow_credentials=True,
     allow_methods=["*"],

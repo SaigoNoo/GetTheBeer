@@ -257,7 +257,7 @@ class TestAPIEndpoints(TestCase):
             json={"username": "Trisouille", "password": "user123"},
             timeout=5
         )
-        #print("Réponse login:", login_response.json())
+        # print("Réponse login:", login_response.json())
         self.assertEqual(login_response.status_code, 200)
 
         response = session.get(
@@ -276,6 +276,7 @@ class TestAPIEndpoints(TestCase):
     def test_get_profile(self):
         session = Session()
 
+        # Étape 1 : Connexion pour créer une session authentifiée
         login_response = session.post(
             url=f"{getenv('BACKEND_URL')}/api/user/login",
             headers={
@@ -288,9 +289,10 @@ class TestAPIEndpoints(TestCase):
             },
             timeout=5
         )
-        #print("Réponse login:", login_response.json())
+        print("Réponse login:", login_response.json())
         self.assertEqual(login_response.status_code, 200)
 
+        # Étape 2 : Requête au profil utilisateur
         response = session.get(
             url=f"{getenv('BACKEND_URL')}/api/user/profil",
             headers={"Accept": "application/json"},
@@ -320,6 +322,7 @@ class TestAPIEndpoints(TestCase):
             expected_keys=["code", "message"],
             received_keys=list(response.json().keys())
         )
+
 
 if __name__ == '__main__':
     load_dotenv()

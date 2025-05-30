@@ -13,7 +13,7 @@ def load(app: FastAPI, debug: Debug) -> None:
         description="Permet de définir le mode débug pour cette instance !",
         tags=["Debug"],
     )
-    async def create_user(debug_mode: bool):
+    async def toggle_mode(debug_mode: bool):
         if debug.mode and debug_mode:
             pass
         elif debug.mode and not debug_mode:

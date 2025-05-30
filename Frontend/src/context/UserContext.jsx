@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {toast} from "react-hot-toast";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const AuthContext = createContext();
 
@@ -11,7 +12,7 @@ export const UserProvider = ({children}) => {
 
     const fetchUser = async () => {
         try {
-            const res = await fetch("http://localhost:8000/api/user/me", {
+            const res = await fetch(`${apiUrl}/api/user/me`, {
                 credentials: "include",
             });
 
@@ -20,6 +21,7 @@ export const UserProvider = ({children}) => {
                 setUser(null);
             } else if (res.ok) {
                 const data = await res.json();
+                console.log(data);
                 setUser(data.user);
             } else {
                 console.error("Erreur inconnue lors de la récupération de l'utilisateur");
@@ -37,7 +39,7 @@ export const UserProvider = ({children}) => {
 
     const login = async (username, password) => {
         try {
-            const res = await fetch("http://localhost:8000/api/user/login", {
+            const res = await fetch(`${apiUrl}/api/user/login`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 credentials: "include",
@@ -62,7 +64,7 @@ export const UserProvider = ({children}) => {
 
     const logout = async () => {
         try {
-            await fetch("http://localhost:8000/api/user/logout", {
+            await fetch(`${apiUrl}/api/user/logout`, {
                 method: "POST",
                 credentials: "include",
             });

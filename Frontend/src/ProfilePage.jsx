@@ -3,8 +3,9 @@ import {useNavigate} from "react-router-dom";
 import styles from "./styles/profile.module.css";
 import beerMug from "./img/beermug.png";
 import {useAuth} from "./context/UserContext";
-import {Toaster, toast} from 'react-hot-toast';
-import loginPage from "./LoginPage.jsx";
+import {toast, Toaster} from 'react-hot-toast';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/user/profil", {
+                const response = await fetch(`${apiUrl}/api/user/profil`, {
                     credentials: "include",
                 });
                 if (!response.ok) throw new Error("Erreur lors de la récupération");

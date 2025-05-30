@@ -6,7 +6,7 @@ import {useAuth} from "./context/UserContext.jsx";
 import axios from "axios";
 import {toast, Toaster} from 'react-hot-toast';
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const HomePage = () => {
     const navigate = useNavigate();
     const {user, loading, logout} = useAuth();
@@ -17,7 +17,7 @@ const HomePage = () => {
     const deleteFriend = async (friendId) => {
         try {
             await axios.post(
-                `http://localhost:8000/api/user/delete_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
+                `${apiUrl}/api/user/delete_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
                 {},
                 {headers: {accept: "application/json"}, withCredentials: true}
             );
@@ -32,7 +32,7 @@ const HomePage = () => {
     const addFriend = async (friendId) => {
         try {
             await axios.post(
-                `http://localhost:8000/api/user/add_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
+                `${apiUrl}/api/user/add_friend/?user_id=${user.user_id}&friend_id=${friendId}`,
                 {},
                 {headers: {accept: "application/json"}, withCredentials: true}
             );
@@ -45,16 +45,14 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        if (!loading && !user) {
-            navigate("/");
-        } else if (!loading && user) {
+        if (!loading && user) {
             fetchFriends();
         }
     }, [loading, user]);
 
     const fetchFriends = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/api/user/list_friends", {withCredentials: true});
+            const res = await axios.get(`${apiUrl}/api/user/list_friends`, {withCredentials: true});
             const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
             setFriends(data);
         } catch (error) {
@@ -73,7 +71,7 @@ const HomePage = () => {
 
     const fetchSearchResults = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/user/show_members", {withCredentials: true});
+            const res = await axios.get(`${apiUrl}/api/user/show_members`, {withCredentials: true});
             const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
 
             const filtered = data
@@ -117,6 +115,28 @@ const HomePage = () => {
                 <main className={styles["main-content"]}>
                     <section className={styles.stats}>
                         <h3>Mes stats</h3>
+                        <div className={styles.statsGrid}>
+                            <div className={styles.statCard}>
+                                <p className={styles.statLabel}>🍺 Bières restantes</p>
+                                <p className={styles.statValue}>{user.reserve_biere}</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <p className={styles.statLabel}>💸 Bières pariées</p>
+                                <p className={styles.statValue}>{user.bieres_pariees}</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <p className={styles.statLabel}>➕ Bières gagnées</p>
+                                <p className={styles.statValue}>{user.bieres_gagnes}</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <p className={styles.statLabel}>➖ Bières perdues</p>
+                                <p className={styles.statValue}>{user.bieres_perdues}</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <p className={styles.statLabel}>🎮 Parties jouées</p>
+                                <p className={styles.statValue}>{user.parties_jouees}</p>
+                            </div>
+                        </div>
                     </section>
 
                     <section className={styles.news}>

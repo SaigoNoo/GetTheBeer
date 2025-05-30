@@ -1,5 +1,4 @@
 import {useState} from "react";
-import styles from "./styles/profile.module.css";
 
 export default function ContactForm() {
     const [form, setForm] = useState({

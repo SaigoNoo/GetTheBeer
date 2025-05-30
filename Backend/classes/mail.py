@@ -44,4 +44,6 @@ class OpenMailHTML:
             data = html.read()
         for [key, value] in options.items():
             data = data.replace(f"${key}$", value)
+        if "$f_url$" in data:
+            data = data.replace("$f_url$", getenv(key="CORS_URL"))
         return data

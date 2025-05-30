@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Request, HTTPException
-
 from api.models import CreateUser, ResetEmailResponse, RequestPasswordReset, Authentification
 from classes.database import Database
 from classes.debug import Debug
 from classes.users import UsersAPI
+from fastapi import FastAPI, Request, HTTPException
 
 
 def load(app: FastAPI, db: Database, debug: Debug) -> None:
@@ -25,7 +24,7 @@ def load(app: FastAPI, db: Database, debug: Debug) -> None:
         description="Permet de lister les utilisateurs",
         tags=["Show"],
     )
-    async def get_users() -> list or None:
+    async def get_users():
         return user.list_members()
 
     @app.post(
@@ -126,8 +125,18 @@ def load(app: FastAPI, db: Database, debug: Debug) -> None:
                 id_user=user_id
             )
         )
-        reserve_biere = db.call_function(name="get_user_beer_reserve", uid=user_id)
-        return {"user": {"user_id": user_id, "pseudo": pseudo, "reserve_biere": reserve_biere}}
+
+        return {
+            "user": {
+                "user_id": user_id,
+                "pseudo": pseudo,
+                "reserve_biere": db.call_function(name="get_user_beer_reserve", uid=user_id),
+                "parties_jouees": db.call_function(name="count_games", uid=user_id),
+                "bieres_pariees": db.call_function(name="beers_bet", uid=user_id),
+                "bieres_perdues": db.call_function(name="get_loose_beer", uid=user_id),
+                "bieres_gagnes": db.call_function(name="get_win_beer", uid=user_id)
+            }
+        }
 
     @app.get("/api/user/profil")
     async def get_profile(request: Request):
@@ -160,19 +169,17 @@ def load(app: FastAPI, db: Database, debug: Debug) -> None:
     @app.post("/api/game/transaction")
     async def handle_transaction(request: Request):
         data = await request.json()
-        winner_id = data.get("winner_id")
-        loser_id = data.get("loser_id")
-        beers = data.get("beers")
 
         debug.print(app_module="UserTransaction", text=f"Received transaction data: {data}")
 
         # Validate input data
-        if not winner_id or not loser_id or not beers:
+        if not data.get("winner_id") or not data.get("loser_id") or not data.get("beers"):
             raise HTTPException(status_code=400, detail="Invalid data")
 
         try:
             # Call the do_transaction function
-            result = user.do_transaction(winner_id=winner_id, loser_id=loser_id, beers=beers)
+            result = user.do_transaction(winner_id=data.get("winner_id"), loser_id=data.get("loser_id"),
+                                         beers=data.get("beers"))
             return result
         except Exception as e:
             debug.print(app_module="UserTransaction", text=f"Error in transaction: {e}")

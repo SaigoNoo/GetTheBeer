@@ -1,13 +1,12 @@
 from uuid import uuid4
 
-from bcrypt import hashpw, gensalt, checkpw
-from fastapi import HTTPException
-from fastapi import Request
-
 from api.models import CreateUser
+from bcrypt import hashpw, gensalt, checkpw
 from classes.database import Database
 from classes.debug import Debug
 from classes.mail import Mail, OpenMailHTML
+from fastapi import HTTPException
+from fastapi import Request
 
 
 class UsersAPI:
@@ -221,7 +220,7 @@ class UsersAPI:
             data = user
             data["beers"] = self.db.call_function(
                 name="get_user_beer_reserve",
-                uid=user_id
+                uid=data["user_ID"]
             )
             response.append(user) if user["user_ID"] != user_id else None
         return response
@@ -234,27 +233,13 @@ class UsersAPI:
             self.debug.print(app_module="UserTransaction", text="Le perdant n'a plus assez de bieres a offrir")
             raise HTTPException(status_code=405, detail="Le perdant n'a plus assez de bieres a offrir !")
         self.debug.print(app_module="UserTransaction", text="Calcul des changements de bieres...")
-        beers_left_looser = self.db.call_function(
-            name="how_many_beer",
-            uid=loser_id
-        ) - beers
-
-        beers_left_winner = self.db.call_function(
-            name="how_many_beer",
-            uid=winner_id
-        ) + beers
 
         self.debug.print(app_module="UserTransaction", text="Modifications des bieres dans la DB...")
         self.db.call_procedure(
             name="do_beer_transaction",
-            uid=loser_id,
-            beer=beers_left_looser
-        )
-
-        self.db.call_procedure(
-            name="do_beer_transaction",
-            uid=winner_id,
-            beer=beers_left_winner
+            w_uid=winner_id,
+            l_uid=loser_id,
+            beer=beers
         )
 
         # Record the transaction
