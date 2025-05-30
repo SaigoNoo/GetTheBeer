@@ -209,6 +209,45 @@ class TestAPIEndpoints(TestCase):
             code_405_allowed=True
         )
 
+    def test_send_mail(self):
+        response = post(
+            url=f"{getenv('BACKEND_URL')}/api/mail/send/",
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            json={
+                "email": "dorian.kwizera@gmail.com",
+                "subject": "Test unitaire",
+                "file": "Bonjour jeune buveur",
+                "extra": {}
+            },
+            timeout=5
+        )
+
+        print("Status code:", response.status_code)
+        print("Raw response:", response.text)
+
+        try:
+            body = response.json()
+            print("💬 JSON reçu :", dumps(body, indent=4, ensure_ascii=False))
+        except Exception as e:
+            print("⛔ Erreur de décodage JSON :", e)
+
+    def test_is_friend(self):
+        response = get(
+            url=f"{getenv('BACKEND_URL')}/api/user/is_friend?username_a=Trisouille&username_b=DKwiz",
+            headers={
+                "Accept": "application/json"
+            },
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict
+        )
+
 
 if __name__ == '__main__':
     load_dotenv()
