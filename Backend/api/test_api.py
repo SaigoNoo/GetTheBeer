@@ -3,7 +3,7 @@ from os import getenv
 from unittest import TestCase, main
 
 from dotenv import load_dotenv
-from requests import get, post
+from requests import get, post, Session
 
 
 class TestAPIEndpoints(TestCase):
@@ -247,6 +247,33 @@ class TestAPIEndpoints(TestCase):
             response=response,
             type_awaited=dict
         )
+
+    def test_get_current_user(self):
+        session = Session()
+
+        login_response = session.post(
+            url=f"{getenv('BACKEND_URL')}/api/user/login",
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
+            json={"username": "Trisouille", "password": "user123"},
+            timeout=5
+        )
+        #print("Réponse login:", login_response.json())
+        self.assertEqual(login_response.status_code, 200)
+
+        response = session.get(
+            url=f"{getenv('BACKEND_URL')}/api/user/me",
+            headers={"Accept": "application/json"},
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=["user"],
+            received_keys=list(response.json().keys())
+        )
+
+
 
 
 if __name__ == '__main__':
