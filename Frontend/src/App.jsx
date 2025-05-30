@@ -1,6 +1,7 @@
 import {Route, Routes} from "react-router-dom";
 import LoginPage from "./LoginPage";
 import SignupPage from "./newAccountPage.jsx";
+import ResetPassword from './ResetPage.jsx';
 import HomePage from "./HomePage";
 import GamePage from "./GamePage";
 import ProfilePage from "./ProfilePage";
@@ -20,6 +21,7 @@ function AppRoutes() {
         <Routes>
             <Route path="/" element={<LoginPage/>}/>
             <Route path="/signUp" element={<SignupPage/>}/>
+            <Route path="/reset" element={<ResetPassword/>}/>
             <Route
                 path="/home"
                 element={

@@ -1,7 +1,7 @@
 .game-page {
     font-family: "IM FELL Great Primer SC", serif;
-    background: url("../img/fond.png") no-repeat center center fixed;
-    background-size: cover;
+    background: url("../img/fond.png") no-repeat fixed left;
+    background-size: contain;
     color: white;
     margin: 0;
     height: 100vh;
@@ -26,8 +26,8 @@
 .logo {
     height: 60px;
     margin-right: 20px;
-    width:auto;
-    border:none;
+    width: auto;
+    border: none;
 }
 
 .title h1 {

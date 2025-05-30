@@ -124,6 +124,9 @@ class UsersAPI:
                     new_pass=self.encrypt_password(
                         data=new_password
                     ))
+                infos = self.get_user_infos(user_id=self.db.call_function(name="get_token_owner_id", token=str(token)))
+                content = OpenMailHTML().html_raw(file="reset_confirm", name=infos["prenom"])
+                Mail(receiver=infos['mail'], title="Demande de reset", body=content).send()
                 return {
                     "code": "RESET_OK",
                     "message": "Le mot de passe a bien été modifié !"

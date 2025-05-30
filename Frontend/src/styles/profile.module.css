@@ -1,4 +1,5 @@
 
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -51,10 +52,9 @@
 }
 
 /* === PAGE === */
-.pageWrapper {
-    background-color: black;
-    min-height: 100vh;
-    color: white;
+body {
+    background: url("../img/fond.png") no-repeat fixed left;
+    background-size: contain;
 }
 
 /* Centre le contenu */

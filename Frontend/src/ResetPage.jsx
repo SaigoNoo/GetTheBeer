@@ -1,67 +1,86 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import axios from "axios";
+import {toast, Toaster} from "react-hot-toast";
+import styles from "./styles/connexion.module.css";
 
-export default function ContactForm() {
-    const [form, setForm] = useState({
-        nom: "",
-        email: "",
-        message: "",
-    });
+const apiUrl = import.meta.env.VITE_API_URL;
 
-    const handleChange = (e) => {
-        setForm({...form, [e.target.name]: e.target.value});
-    };
+const ResetPassword = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    // Récupérer le token depuis l'URL
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+
+    // Rediriger vers la page d'accueil si le token est absent
+    useEffect(() => {
+        if (!token) {
+            navigate("/", {replace: true});
+        }
+    }, [token, navigate]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Formulaire envoyé :", form);
-        // tu peux envoyer les données ici avec fetch ou axios
+
+        if (!password || !confirmPassword) {
+            toast.error("Remplis tous les champs");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            toast.error("Les mots de passe ne correspondent pas");
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${apiUrl}/api/user/reset_password`, {
+                token: token,
+                password: password,
+            });
+
+            if (response.data.code === "RESET_OK") {
+                toast.success(response.data.message);
+                setTimeout(() => navigate("/"), 1500);
+            } else {
+                toast.error(response.data.message || "Erreur");
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur serveur");
+        }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md space-y-4"
-            >
-                <h2 className="text-2xl font-bold">Contacte-moi</h2>
-
-                <input
-                    type="text"
-                    name="nom"
-                    placeholder="Ton nom"
-                    value={form.nom}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-xl"
-                    required
-                />
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Ton email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-xl"
-                    required
-                />
-
-                <textarea
-                    name="message"
-                    placeholder="Ton message"
-                    value={form.message}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-xl"
-                    rows="4"
-                    required
-                />
-
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
-                >
-                    Envoyer
-                </button>
-            </form>
-        </div>
+        <>
+            <Toaster position="bottom-right"/>
+            <div className={styles["reset-page"]}>
+                <h2>Réinitialisation du mot de passe</h2>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <input
+                        type="password"
+                        placeholder="Nouveau mot de passe"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={styles.form_input}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Confirmer le mot de passe"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className={styles.form_input}
+                    />
+                    <button className={styles.form_submit} type="submit">
+                        Réinitialiser
+                    </button>
+                </form>
+            </div>
+        </>
     );
-}
+};
+
+export default ResetPassword;

@@ -10,7 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from api import start
 from classes.debug import Debug
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 debug = Debug()
 load_dotenv()
 

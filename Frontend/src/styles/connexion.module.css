@@ -1,7 +1,11 @@
-.login-container {
+* {
     font-family: "IM FELL Great Primer SC", serif;
-    background: url("../img/fond.png") no-repeat center center fixed;
-    background-size: cover;
+}
+
+.login-container {
+    background-size: contain;
+    background: url("../img/fond.png") no-repeat fixed left;
+    background-size: contain;
     color: white;
     margin: 0;
     height: 100vh;
@@ -47,16 +51,49 @@
     padding: 8px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #b47b00;
+    color: white;
+    background-color: #1f1f1f;
+}
+
+.form_input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #1f1f1f inset !important; /* même bg que l'input */
+    -webkit-text-fill-color: white !important; /* ta couleur de texte */
+    caret-color: white !important;
+    font-family: inherit !important; /* ou précise la font si tu veux être sûr */
+    font-size: 16px !important;
+    border-radius: 5px !important;
+}
+
+.form_input:focus {
+    color: #b47b00;
+    border-color: #b47b00;
+}
+
+.form_input:hover {
+    border-color: #b47b00;
 }
 
 .form_submit {
     background-color: #b47b00;
     color: white;
     padding: 10px;
-    border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 20px;
+    border: 3px solid #b47b00;
+    margin-bottom: 1vh;
+}
+
+.content h1:hover {
+    color: #b47b00;
+    cursor: pointer;
+}
+
+.form_submit:hover {
+    background-color: #cccccc;
+    color: #b47b00;
+    border: 3px solid #b47b00;
 }
 
 .form_check_wrapper {
@@ -82,6 +119,11 @@
     border-radius: 25px;
 }
 
+.infobull:hover {
+    background-color: #1f1f1f;
+    color: #b47b00;
+}
+
 
 #info {
     margin-top: 20px;
@@ -93,10 +135,14 @@
 }
 
 .forgot-password {
-    color: #8fb2e6;
+    color: #b47b00;
     text-decoration: none;
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 20px;
+}
+
+.forgot-password:hover {
+    color: white;
+    cursor: pointer;
 }
 
 
@@ -140,4 +186,24 @@
     color: white;
     margin-top: -3vh;
     margin-left: 4%;
+}
+
+.bottom-left-text *:hover {
+    color: #b47b00;
+    text-shadow: white;
+}
+
+.reset-page {
+    width: 40%;
+    text-align: center;
+    padding: 20vh 30%;
+}
+
+.reset-page h2 {
+    color: white;
+    font-size: 45px;
+}
+
+.reset-page form * {
+    margin: 1vh 0;
 }
