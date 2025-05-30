@@ -273,7 +273,39 @@ class TestAPIEndpoints(TestCase):
             received_keys=list(response.json().keys())
         )
 
+    def test_get_profile(self):
+        session = Session()
 
+        login_response = session.post(
+            url=f"{getenv('BACKEND_URL')}/api/user/login",
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            json={
+                "username": "Trisouille",
+                "password": "user123"
+            },
+            timeout=5
+        )
+        #print("Réponse login:", login_response.json())
+        self.assertEqual(login_response.status_code, 200)
+
+        response = session.get(
+            url=f"{getenv('BACKEND_URL')}/api/user/profil",
+            headers={"Accept": "application/json"},
+            timeout=5
+        )
+
+        self.make_test(
+            response=response,
+            type_awaited=dict,
+            expected_keys=[
+                "user_ID", "nom", "prenom", "pseudo",
+                "mail", "image", "biographie"
+            ],
+            received_keys=list(response.json().keys())
+        )
 
 
 if __name__ == '__main__':
